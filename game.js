@@ -25,7 +25,7 @@
   const ovLose=document.getElementById('ovLose'), loseMsg=document.getElementById('loseMsg'), btnRetry=document.getElementById('btnRetry');
   const bgm = document.getElementById('bgm'); const sCatch=document.getElementById('sCatch'), sPounce=document.getElementById('sPounce'), sSprint=document.getElementById('sSprint');
 
-  let state='menu',lvl=1,goal=25,goalCaught=0;
+  let state='menu',lvl=1,goal=35,goalCaught=0;
   let countL=0,countM=0,countY=0;
   function updHUD(){ cL.textContent=countL; cM.textContent=countM; cY.textContent=countY; lvlEl.textContent=lvl; goalNeed.textContent=goal; goalLeft.textContent=Math.max(0, goal-goalCaught); }
 
@@ -46,7 +46,7 @@
   let scene, layers=null, loki, merlin=null, yumi=null, miceGroup, obstGroup;
   let keys;
   let jdx=0,jdy=0, swipeActive=false, swipeStart=null;
-  const BASE_MICE = /iPhone|iPad|iPod/.test(navigator.userAgent)?28:36;
+  const BASE_MICE = /iPhone|iPad|iPod/.test(navigator.userAgent)?40:50;
   const maxMice = () => Math.floor(BASE_MICE * (1 + 0.25*(lvl-1)));
 
   function preload(){
@@ -153,7 +153,7 @@
 
   function startGame(){ state='play'; hud.style.display='flex'; menu.style.display='none'; if(bgm.paused && sfxToggle.checked) bgm.play(); }
   function showMenu(){ state='menu'; hud.style.display='none'; menu.style.display='flex'; }
-  function newGame(){ lvl=1; goal=25; goalCaught=0; countL=countM=countY=0; updHUD(); resetWorld(); }
+  function newGame(){ lvl=1; goal=35; goalCaught=0; countL=countM=countY=0; updHUD(); resetWorld(); }
   function nextLevel(){ goal = Math.floor(goal*1.25); goalCaught=0; countL=0; countM=0; countY=0; updHUD(); resetWorld(); }
 
   function resetWorld(){
