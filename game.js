@@ -52,9 +52,8 @@
   function preload(){
     scene=this;
     for(const b of biomes){
-      this.load.image(`${b}_far`, `${b}_far.webp?v=106`);
-      this.load.image(`${b}_mid`, `${b}_mid.webp?v=106`);
-      this.load.image(`${b}_near`, `${b}_near.webp?v=106`);
+      // Use the existing single background image for all parallax layers
+      this.load.image(b, `${b}.webp?v=106`);
     }
     this.load.spritesheet('loki', 'loki_sheet.webp?v=106', { frameWidth: META.w, frameHeight: META.h });
     this.load.spritesheet('merlin', 'merlin_sheet.webp?v=106', { frameWidth: META.w, frameHeight: META.h });
@@ -75,9 +74,9 @@
     scene.physics.world.setBounds(0,0,WORLD.w,WORLD.h);
 
     layers = {
-      far: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, `${biomes[(lvl-1)%biomes.length]}_far`).setOrigin(0,0).setScrollFactor(0),
-      mid: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, `${biomes[(lvl-1)%biomes.length]}_mid`).setOrigin(0,0).setScrollFactor(0),
-      near: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, `${biomes[(lvl-1)%biomes.length]}_near`).setOrigin(0,0).setScrollFactor(0)
+      far: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, `${biomes[(lvl-1)%biomes.length]}`).setOrigin(0,0).setScrollFactor(0),
+      mid: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, `${biomes[(lvl-1)%biomes.length]}`).setOrigin(0,0).setScrollFactor(0),
+      near: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, `${biomes[(lvl-1)%biomes.length]}`).setOrigin(0,0).setScrollFactor(0)
     };
 
     obstGroup = scene.physics.add.staticGroup();
@@ -160,9 +159,10 @@
     scene.cameras.main.stopFollow();
     scene.cameras.main.setScroll(0,0);
     const biome = biomes[(lvl-1)%biomes.length];
-    layers.far.setTexture(`${biome}_far`);
-    layers.mid.setTexture(`${biome}_mid`);
-    layers.near.setTexture(`${biome}_near`);
+    // All parallax layers use the same single background image
+    layers.far.setTexture(biome);
+    layers.mid.setTexture(biome);
+    layers.near.setTexture(biome);
     obstGroup.clear(true,true);
     for(const o of OBST[(lvl-1)%4]){
       const r = scene.add.rectangle(o[0]+o[2]/2, o[1]+o[3]/2, o[2], o[3], 0x222a55, 0.55).setStrokeStyle(2,0x23284a);
