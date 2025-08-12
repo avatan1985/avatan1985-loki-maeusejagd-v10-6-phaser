@@ -283,13 +283,14 @@
     loki.play(Math.hypot(loki.body.velocity.x,loki.body.velocity.y)>30 ? (loki.boost?'loki_sprint':'loki_run') : 'loki_idle', true);
 
     if(lvl>=2 && !merlin){
-      merlin = scene.physics.add.sprite(200,200,'merlin');
+      merlin = scene.physics.add.sprite(loki.x - 200, loki.y - 200, 'merlin');
       const scale = 0.75;
       const radius = 21 * scale;
       merlin.setScale(scale);
       merlin.play('merlin_run');
       merlin.speed=330;
       merlin.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
+      merlin.setCollideWorldBounds(true);
       scene.physics.add.collider(merlin, obstGroup);
       scene.physics.add.overlap(merlin, miceGroup, (cat,m)=>{ m.destroy(); countM++; goalCaught++; updHUD(); checkEnd(); });
     }
@@ -301,6 +302,7 @@
       yumi.play('yumi_run');
       yumi.speed=300;
       yumi.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
+      yumi.setCollideWorldBounds(true);
       scene.physics.add.collider(yumi, obstGroup);
       scene.physics.add.overlap(yumi, miceGroup, (cat,m)=>{ m.destroy(); countY++; goalCaught++; updHUD(); checkEnd(); });
     }
