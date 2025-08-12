@@ -209,7 +209,7 @@
     scene.cameras.main.stopFollow();
     scene.cameras.main.setScroll(0,0);
     const biome = biomes[(lvl-1)%biomes.length];
-    // All parallax layers use the same single background image
+    // Reuse one background image per biome for all parallax layers
     layers.far.setTexture(biome);
     layers.mid.setTexture(biome);
     layers.near.setTexture(biome);
