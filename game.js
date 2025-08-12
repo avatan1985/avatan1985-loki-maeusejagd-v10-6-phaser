@@ -44,7 +44,11 @@
 
   function preload(){
     scene=this;
-    for(const b of biomes){ this.load.image(b, `${b}.webp?v=106`); }
+    for(const b of biomes){
+      this.load.image(`${b}_far`, `${b}_far.webp?v=106`);
+      this.load.image(`${b}_mid`, `${b}_mid.webp?v=106`);
+      this.load.image(`${b}_near`, `${b}_near.webp?v=106`);
+    }
     this.load.spritesheet('loki', 'loki_sheet.webp?v=106', { frameWidth: META.w, frameHeight: META.h });
     this.load.spritesheet('merlin', 'merlin_sheet.webp?v=106', { frameWidth: META.w, frameHeight: META.h });
     this.load.spritesheet('yumi', 'yumi_sheet.webp?v=106', { frameWidth: META.w, frameHeight: META.h });
@@ -63,7 +67,11 @@
     scene.cameras.main.setBounds(0,0,WORLD.w,WORLD.h);
     scene.physics.world.setBounds(0,0,WORLD.w,WORLD.h);
 
-    layers = { bg: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, biomes[(lvl-1)%biomes.length]).setOrigin(0,0).setScrollFactor(0) };
+    layers = {
+      far: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, `${biomes[(lvl-1)%biomes.length]}_far`).setOrigin(0,0).setScrollFactor(0),
+      mid: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, `${biomes[(lvl-1)%biomes.length]}_mid`).setOrigin(0,0).setScrollFactor(0),
+      near: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, `${biomes[(lvl-1)%biomes.length]}_near`).setOrigin(0,0).setScrollFactor(0)
+    };
 
     const OBST = {
       0:[[600,300,460,60],[1100,500,420,80],[1900,1200,500,60],[2600,800,380,90]],
@@ -139,7 +147,10 @@
   function resetWorld(){
     scene.cameras.main.stopFollow();
     scene.cameras.main.setScroll(0,0);
-    layers.bg.setTexture(biomes[(lvl-1)%biomes.length]);
+    const biome = biomes[(lvl-1)%biomes.length];
+    layers.far.setTexture(`${biome}_far`);
+    layers.mid.setTexture(`${biome}_mid`);
+    layers.near.setTexture(`${biome}_near`);
     obstGroup.clear(true,true);
     const OBST2 = {
       0:[[600,300,460,60],[1100,500,420,80],[1900,1200,500,60],[2600,800,380,90]],
@@ -215,7 +226,9 @@
     if(goalCaught>=goal){ document.getElementById('ovWin').style.display='flex'; document.getElementById('winMsg').textContent="Weiter geht's!"; scene.scene.pause(); }
 
     const cam=scene.cameras.main;
-    layers.bg.tilePositionX=cam.scrollX*0.5; layers.bg.tilePositionY=cam.scrollY*0.5;
+    layers.far.tilePositionX=cam.scrollX*0.2; layers.far.tilePositionY=cam.scrollY*0.2;
+    layers.mid.tilePositionX=cam.scrollX*0.5; layers.mid.tilePositionY=cam.scrollY*0.5;
+    layers.near.tilePositionX=cam.scrollX*0.8; layers.near.tilePositionY=cam.scrollY*0.8;
 
     if(mapToggle.checked){ const w=mm.width,h=mm.height; mctx.clearRect(0,0,w,h); mctx.fillStyle='#0b0e1a'; mctx.fillRect(0,0,w,h); const sx=w/WORLD.w, sy=h/WORLD.h;
       mctx.fillStyle='#cbd1ea'; miceGroup.children.iterate(m2 => { if(!m2)return; mctx.fillRect(m2.x*sx, m2.y*sy, 2, 2); });
