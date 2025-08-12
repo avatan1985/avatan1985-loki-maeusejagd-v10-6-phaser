@@ -26,32 +26,33 @@ describe('saveSlot and loadSlot', () => {
     };
     vm.createContext(context);
     vm.runInContext(`
-      var lvl=1, goal=35, goalCaught=0;
-      var countL=0, countM=0, countY=0;
+        var lvl=1, goal=35, goalCaught=0;
+        var countL=0, countM=0, countY=0, xp=0;
       ${saveSlotCode}
       ${loadSlotCode}
     `, context);
   });
 
   test('restores game state after save/load', () => {
-    Object.assign(context, { lvl: 3, goal: 100, goalCaught: 50, countL: 1, countM: 2, countY: 3 });
+      Object.assign(context, { lvl: 3, goal: 100, goalCaught: 50, countL: 1, countM: 2, countY: 3, xp: 7 });
     context.saveSlot();
 
     expect(localStorage.getItem('slot0')).not.toBeNull();
     expect(localStorage.getItem('slot')).toBeNull();
 
-    Object.assign(context, { lvl: 0, goal: 0, goalCaught: 0, countL: 0, countM: 0, countY: 0 });
+      Object.assign(context, { lvl: 0, goal: 0, goalCaught: 0, countL: 0, countM: 0, countY: 0, xp: 0 });
     const result = context.loadSlot();
 
     expect(result).toBe(true);
-    const { lvl, goal, goalCaught, countL, countM, countY } = context;
-    expect({ lvl, goal, goalCaught, countL, countM, countY }).toEqual({
-      lvl: 3,
-      goal: 100,
-      goalCaught: 50,
-      countL: 1,
-      countM: 2,
-      countY: 3
-    });
+      const { lvl, goal, goalCaught, countL, countM, countY, xp } = context;
+      expect({ lvl, goal, goalCaught, countL, countM, countY, xp }).toEqual({
+        lvl: 3,
+        goal: 100,
+        goalCaught: 50,
+        countL: 1,
+        countM: 2,
+        countY: 3,
+        xp: 7
+      });
   });
 });
