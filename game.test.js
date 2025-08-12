@@ -28,7 +28,7 @@ describe('saveSlot and loadSlot', () => {
     };
     vm.createContext(context);
     vm.runInContext(`
-        var lvl=1, goal=15, goalCaught=0;
+        var lvl=1, goal=15;
         var countL=0, countM=0, countY=0, xp=0;
       ${safeGetCode}
       ${safeSetCode}
@@ -38,21 +38,20 @@ describe('saveSlot and loadSlot', () => {
   });
 
   test('restores game state after save/load', () => {
-      Object.assign(context, { lvl: 3, goal: 100, goalCaught: 50, countL: 1, countM: 2, countY: 3, xp: 7 });
+      Object.assign(context, { lvl: 3, goal: 100, countL: 1, countM: 2, countY: 3, xp: 7 });
     context.saveSlot();
 
     expect(localStorage.getItem('slot0')).not.toBeNull();
     expect(localStorage.getItem('slot')).toBeNull();
 
-      Object.assign(context, { lvl: 0, goal: 0, goalCaught: 0, countL: 0, countM: 0, countY: 0, xp: 0 });
+      Object.assign(context, { lvl: 0, goal: 0, countL: 0, countM: 0, countY: 0, xp: 0 });
     const result = context.loadSlot();
 
     expect(result).toBe(true);
-      const { lvl, goal, goalCaught, countL, countM, countY, xp } = context;
-      expect({ lvl, goal, goalCaught, countL, countM, countY, xp }).toEqual({
+      const { lvl, goal, countL, countM, countY, xp } = context;
+      expect({ lvl, goal, countL, countM, countY, xp }).toEqual({
         lvl: 3,
         goal: 100,
-        goalCaught: 50,
         countL: 1,
         countM: 2,
         countY: 3,
@@ -70,7 +69,7 @@ describe('catchMouse', () => {
     const body = overlap[0];
     expect(body).toMatch(/m\.destroy\(\)/);
     expect(body).toMatch(/countL\+\+/);
-    expect(body).toMatch(/goalCaught\+\+/);
+    expect(body).not.toMatch(/goalCaught\+\+/);
     expect(body).toMatch(/xp\+\+/);
   });
 });
@@ -116,14 +115,13 @@ describe('nextLevel', () => {
     };
     vm.createContext(context);
     vm.runInContext(`
-      var lvl=1, goal=15, goalCaught=5, countL=1, countM=2, countY=3;
+      var lvl=1, goal=15, countL=1, countM=2, countY=3;
       ${nextLevelCode}
     `, context);
 
     context.nextLevel();
-    const { lvl, goalCaught, countL, countM, countY } = context;
+    const { lvl, countL, countM, countY } = context;
     expect(lvl).toBe(2);
-    expect(goalCaught).toBe(0);
     expect(countL).toBe(0);
     expect(countM).toBe(0);
     expect(countY).toBe(0);
