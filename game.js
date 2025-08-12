@@ -25,7 +25,9 @@
   const ovLose=document.getElementById('ovLose'), loseMsg=document.getElementById('loseMsg'), btnRetry=document.getElementById('btnRetry');
   const bgm = document.getElementById('bgm'); const sCatch=document.getElementById('sCatch'), sPounce=document.getElementById('sPounce'), sSprint=document.getElementById('sSprint');
   const skillbar = document.querySelector('.skillbar');
+  const btnSprint = document.getElementById('btnSprint');
   let gameReady = false;
+  let canDash = false;
 
   const INITIAL_GOAL = 15;
     let state='menu',lvl=1,goal=INITIAL_GOAL;
@@ -63,6 +65,7 @@
   }
 
   initMenu();
+  applyLevelUp();
 
   const config = {
     type: Phaser.AUTO,
@@ -115,6 +118,7 @@
 
     keys = scene.input.keyboard.addKeys('W,A,S,D,LEFT,RIGHT,UP,DOWN,SPACE,SHIFT');
     keys.SHIFT.on('down', () => {
+      if (!canDash) return;
       loki.boost = loki.boost ? 0 : 1;
       if (loki.boost && sfxToggle.checked) {
         sSprint.currentTime = 0;
@@ -159,6 +163,15 @@
     skillbar?.querySelectorAll('.skillbtn').forEach(btn => btn.removeAttribute('data-cd'));
   }
 
+  function applyLevelUp(){
+    canDash = lvl >= 2;
+    if (!canDash && loki) loki.boost = 0;
+    if (btnSprint) {
+      if (canDash) btnSprint.removeAttribute('disabled');
+      else btnSprint.setAttribute('disabled','');
+    }
+  }
+
   function startGame(){
     state='play';
     hud.style.display='flex';
@@ -179,6 +192,7 @@
     lvl=1; goal=INITIAL_GOAL; countL=countM=countY=0; xp=0;
     updHUD();
     resetWorld();
+    if(typeof applyLevelUp==='function') applyLevelUp();
     resetCooldowns();
   }
 
@@ -187,6 +201,7 @@
     goal = Math.floor(goal*1.1); countL=0; countM=0; countY=0;
     updHUD();
     resetWorld();
+    if(typeof applyLevelUp==='function') applyLevelUp();
     resetCooldowns();
   }
 
@@ -249,7 +264,7 @@
   }
 
     function saveSlot(){ const s={lvl,goal,countL,countM,countY,xp}; safeStorageSet('slot0',JSON.stringify(s)); }
-    function loadSlot(){ const s=safeStorageGet('slot0') || safeStorageGet('slot'); if(!s) return false; let o; try{ o=JSON.parse(s); }catch{ return false; } lvl=o.lvl; goal=o.goal; countL=o.countL; countM=o.countM; countY=o.countY; xp=o.xp||0; updHUD(); resetWorld(); if(!safeStorageGet('slot0')) safeStorageSet('slot0', s); return true; }
+    function loadSlot(){ const s=safeStorageGet('slot0') || safeStorageGet('slot'); if(!s) return false; let o; try{ o=JSON.parse(s); }catch{ return false; } lvl=o.lvl; goal=o.goal; countL=o.countL; countM=o.countM; countY=o.countY; xp=o.xp||0; updHUD(); resetWorld(); if(typeof applyLevelUp==='function') applyLevelUp(); if(!safeStorageGet('slot0')) safeStorageSet('slot0', s); return true; }
 
   function checkEnd(){
     if(countM>=goal || countY>=goal){
