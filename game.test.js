@@ -65,3 +65,23 @@ describe('speed configuration', () => {
     expect(code.includes('loki.boost?280:0')).toBe(true);
   });
 });
+
+describe('Loki world bounds', () => {
+  const code = fs.readFileSync(__dirname + '/game.js', 'utf8');
+
+  test('create includes world bounds collision', () => {
+    const createSection = code.match(/function create\(\)[^]*?scene\.cameras\.main\.startFollow/)[0];
+    const spriteIdx = createSection.indexOf("loki = scene.physics.add.sprite");
+    expect(spriteIdx).toBeGreaterThan(-1);
+    const collideIdx = createSection.indexOf("loki.setCollideWorldBounds(true)", spriteIdx);
+    expect(collideIdx).toBeGreaterThan(spriteIdx);
+  });
+
+  test('resetWorld includes world bounds collision', () => {
+    const resetSection = code.match(/function resetWorld\(\)[^]*?scene\.cameras\.main\.startFollow/)[0];
+    const spriteIdx = resetSection.indexOf("loki = scene.physics.add.sprite");
+    expect(spriteIdx).toBeGreaterThan(-1);
+    const collideIdx = resetSection.indexOf("loki.setCollideWorldBounds(true)", spriteIdx);
+    expect(collideIdx).toBeGreaterThan(spriteIdx);
+  });
+});
