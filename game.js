@@ -146,7 +146,8 @@
 
   function spawnMouse(){
     const m = scene.physics.add.sprite(80+Math.random()*(WORLD.w-160), 80+Math.random()*(WORLD.h-160), 'mouse').play('mouse_run');
-    m.setCircle(10, 20, 14);
+    const d = 36;
+    m.setCircle(d / 2, (56 - d) / 2, (36 - d) / 2); // 36px diameter centered in 56×36 sprite
     m.base = 120 + Math.random()*40;
     m.dir = new Phaser.Math.Vector2((Math.random()*2-1),(Math.random()*2-1)).normalize();
     m.body.setVelocity(m.dir.x*m.base, m.dir.y*m.base);
