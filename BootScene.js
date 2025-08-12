@@ -4,20 +4,24 @@ class BootScene extends Phaser.Scene {
   }
 
   preload() {
+    const { loadMsg, btnNew, btnContinue } = window;
     this.load.on('progress', v => {
-      loadMsg.textContent = `Loading ${Math.round(v * 100)}%`;
+      if (loadMsg) loadMsg.textContent = `Loading ${Math.round(v * 100)}%`;
     });
     this.load.on('loaderror', file => {
       console.error('Failed to load', file.key);
-      loadMsg.style.color = 'var(--bad)';
-      loadMsg.textContent = `Error loading asset: ${file.key}`;
+      if (loadMsg) {
+        loadMsg.style.color = 'var(--bad)';
+        loadMsg.textContent = `Error loading asset: ${file.key}`;
+      }
       loadFailed = true;
     });
     this.load.on('complete', () => {
       if (!loadFailed) {
         gameReady = true;
-        btnNew.disabled = btnContinue.disabled = false;
-        loadMsg.textContent = '';
+        if (btnNew) btnNew.disabled = false;
+        if (btnContinue) btnContinue.disabled = false;
+        if (loadMsg) loadMsg.textContent = '';
       }
       this.scene.start('MenuScene');
     });
