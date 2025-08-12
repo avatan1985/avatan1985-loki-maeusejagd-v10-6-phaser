@@ -45,15 +45,16 @@ class BootScene extends Phaser.Scene {
     });
 
     const ext = 'webp';
+    const overrides = window.assetOverrides || {};
     for (const b of biomes) {
       if (!this.textures.exists(b)) {
         this.load.image(b, `${b}.${ext}`);
       }
     }
-    this.load.spritesheet('loki', `loki_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
-    this.load.spritesheet('merlin', `merlin_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
-    this.load.spritesheet('yumi', `yumi_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
-    this.load.spritesheet('mouse', `mouse_sheet.${ext}`, { frameWidth: 56, frameHeight: 36 });
+    this.load.spritesheet('loki', overrides.loki || `loki_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
+    this.load.spritesheet('merlin', overrides.merlin || `merlin_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
+    this.load.spritesheet('yumi', overrides.yumi || `yumi_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
+    this.load.spritesheet('mouse', overrides.mouse || `mouse_sheet.${ext}`, { frameWidth: 56, frameHeight: 36 });
   }
 }
 
