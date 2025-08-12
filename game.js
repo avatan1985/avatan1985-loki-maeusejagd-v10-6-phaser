@@ -53,12 +53,12 @@
     scene=this;
     for(const b of biomes){
       // Use the existing single background image for all parallax layers
-      this.load.image(b, `${b}.webp?v=107`);
+      this.load.image(b, `${b}.webp`);
     }
-    this.load.spritesheet('loki', 'loki_sheet.webp?v=107', { frameWidth: META.w, frameHeight: META.h });
-    this.load.spritesheet('merlin', 'merlin_sheet.webp?v=107', { frameWidth: META.w, frameHeight: META.h });
-    this.load.spritesheet('yumi', 'yumi_sheet.webp?v=107', { frameWidth: META.w, frameHeight: META.h });
-    this.load.spritesheet('mouse', 'mouse_sheet.webp?v=107', { frameWidth: 56, frameHeight: 36 });
+    this.load.spritesheet('loki', 'loki_sheet.webp', { frameWidth: META.w, frameHeight: META.h });
+    this.load.spritesheet('merlin', 'merlin_sheet.webp', { frameWidth: META.w, frameHeight: META.h });
+    this.load.spritesheet('yumi', 'yumi_sheet.webp', { frameWidth: META.w, frameHeight: META.h });
+    this.load.spritesheet('mouse', 'mouse_sheet.webp', { frameWidth: 56, frameHeight: 36 });
   }
 
   function create(){
