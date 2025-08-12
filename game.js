@@ -56,6 +56,8 @@
     btnNext.onclick = () => { ovWin.style.display='none'; nextLevel(); scene.scene.resume(); };
     btnRetry.onclick = () => { ovLose.style.display='none'; newGame(); startGame(); scene.scene.resume(); };
 
+    btnNew.disabled = btnContinue.disabled = false;
+
     const ensureTouchClick = btn => btn.addEventListener('touchend', () => btn.click());
     ensureTouchClick(btnNew);
     ensureTouchClick(btnContinue);
