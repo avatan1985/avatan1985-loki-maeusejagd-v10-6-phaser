@@ -103,3 +103,29 @@ describe('speed configuration', () => {
     expect(matches.length).toBe(2);
   });
 });
+
+describe('nextLevel', () => {
+  const code = fs.readFileSync(__dirname + '/game.js', 'utf8');
+
+  test('increments level and resets counters', () => {
+    const nextLevelCode = code.match(/function nextLevel\(\)\{[^]*?\}\n/)[0];
+    const context = {
+      updHUD: () => {},
+      resetWorld: () => {},
+      resetCooldowns: () => {}
+    };
+    vm.createContext(context);
+    vm.runInContext(`
+      var lvl=1, goal=35, goalCaught=5, countL=1, countM=2, countY=3;
+      ${nextLevelCode}
+    `, context);
+
+    context.nextLevel();
+    const { lvl, goalCaught, countL, countM, countY } = context;
+    expect(lvl).toBe(2);
+    expect(goalCaught).toBe(0);
+    expect(countL).toBe(0);
+    expect(countM).toBe(0);
+    expect(countY).toBe(0);
+  });
+});
