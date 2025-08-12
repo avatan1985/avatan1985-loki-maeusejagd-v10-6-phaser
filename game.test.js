@@ -155,3 +155,16 @@ describe('minimap toggle', () => {
     expect(context.mm.style.display).toBe('none');
   });
 });
+
+describe('asset loading format', () => {
+  const code = fs.readFileSync(__dirname + '/game.js', 'utf8');
+
+  test('preload always requests webp assets', () => {
+    expect(code).toMatch(/const ext = 'webp';/);
+    expect(code).not.toMatch(/\.png/);
+  });
+
+  test('supportsWebP is hardcoded to true', () => {
+    expect(code).toMatch(/const supportsWebP = true;/);
+  });
+});

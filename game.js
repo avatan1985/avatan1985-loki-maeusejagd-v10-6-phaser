@@ -11,16 +11,10 @@
     3:[[600,600,600,100],[1700,900,500,90],[2600,700,420,90],[3400,1200,480,100]]
   };
 
-  const supportsWebP = (() => {
-    try {
-      return document
-        .createElement('canvas')
-        .toDataURL('image/webp')
-        .startsWith('data:image/webp');
-    } catch {
-      return false;
-    }
-  })();
+  // Assets are only provided in WebP format. Feature detection can incorrectly
+  // report lack of support on some browsers, leaving the game without required
+  // assets. Assume WebP support so the correct files are always requested.
+  const supportsWebP = true;
 
   const hud = document.getElementById('hud'), menu = document.getElementById('menu');
     const cL=document.getElementById('cL'), cM=document.getElementById('cM'), cY=document.getElementById('cY'), xpEl=document.getElementById('xp'), xpLvlEl=document.getElementById('xpLvl');
@@ -110,7 +104,8 @@
 
   function preload(){
     scene=this;
-    const ext = supportsWebP ? 'webp' : 'png';
+    // Only WebP assets are bundled; always request WebP files.
+    const ext = 'webp';
     for(const b of biomes){
       // Use the existing single background image for all parallax layers
       this.load.image(b, `${b}.${ext}`);
