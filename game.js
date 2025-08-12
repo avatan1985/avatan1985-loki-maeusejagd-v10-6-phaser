@@ -24,6 +24,7 @@
   const ovWin=document.getElementById('ovWin'), winMsg=document.getElementById('winMsg'), btnNext=document.getElementById('btnNext');
   const ovLose=document.getElementById('ovLose'), loseMsg=document.getElementById('loseMsg'), btnRetry=document.getElementById('btnRetry');
   const bgm = document.getElementById('bgm'); const sCatch=document.getElementById('sCatch'), sPounce=document.getElementById('sPounce'), sSprint=document.getElementById('sSprint');
+  const skillbar = document.querySelector('.skillbar');
 
   const INITIAL_GOAL = 35;
     let state='menu',lvl=1,goal=INITIAL_GOAL,goalCaught=0;
@@ -158,10 +159,39 @@
     return m;
   }
 
-  function startGame(){ state='play'; hud.style.display='flex'; menu.style.display='none'; if(bgm.paused && sfxToggle.checked) bgm.play(); }
-  function showMenu(){ state='menu'; hud.style.display='none'; menu.style.display='flex'; }
-    function newGame(){ lvl=1; goal=INITIAL_GOAL; goalCaught=0; countL=countM=countY=0; xp=0; updHUD(); resetWorld(); }
-  function nextLevel(){ goal = Math.floor(goal*1.25); goalCaught=0; countL=0; countM=0; countY=0; updHUD(); resetWorld(); }
+  function resetCooldowns(){
+    skillbar?.querySelectorAll('.skillbtn').forEach(btn => btn.removeAttribute('data-cd'));
+  }
+
+  function startGame(){
+    state='play';
+    hud.style.display='flex';
+    menu.style.display='none';
+    skillbar?.style.display='flex';
+    resetCooldowns();
+    if(bgm.paused && sfxToggle.checked) bgm.play();
+  }
+
+  function showMenu(){
+    state='menu';
+    hud.style.display='none';
+    menu.style.display='flex';
+    skillbar?.style.display='none';
+  }
+
+  function newGame(){
+    lvl=1; goal=INITIAL_GOAL; goalCaught=0; countL=countM=countY=0; xp=0;
+    updHUD();
+    resetWorld();
+    resetCooldowns();
+  }
+
+  function nextLevel(){
+    goal = Math.floor(goal*1.25); goalCaught=0; countL=0; countM=0; countY=0;
+    updHUD();
+    resetWorld();
+    resetCooldowns();
+  }
 
   function resetWorld(){
     scene.cameras.main.stopFollow();
