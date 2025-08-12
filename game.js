@@ -15,9 +15,11 @@
     const cL=document.getElementById('cL'), cM=document.getElementById('cM'), cY=document.getElementById('cY'), xpEl=document.getElementById('xp'), xpLvlEl=document.getElementById('xpLvl');
     const lvlEl = document.getElementById('lvl'), goalNeed = document.getElementById('goalNeed'), goalLeft = document.getElementById('goalLeft');
   const btnNew = document.getElementById('btnNew'), btnContinue = document.getElementById('btnContinue');
-  // Disable menu buttons until the game is fully loaded
-  btnNew.disabled = true;
-  btnContinue.disabled = true;
+  const loadMsg = document.createElement('div');
+  loadMsg.id = 'loadMsg';
+  loadMsg.style.marginTop = '8px';
+  loadMsg.style.color = 'var(--accent)';
+  menu.querySelector('.panel').appendChild(loadMsg);
   const btnRestart=document.getElementById('btnRestart'), btnMenu=document.getElementById('btnMenu'), btnMap=document.getElementById('btnMap'), btnPause=document.getElementById('btnPause'), btnMute=document.getElementById('btnMute');
   const ctrl = document.getElementById('ctrl'), joy = document.getElementById('joy'), stick = document.getElementById('stick'), joySize=document.getElementById('joySize');
   const mapToggle = document.getElementById('mapToggle'), sfxToggle=document.getElementById('sfxToggle');
@@ -30,7 +32,10 @@
   const skillbar = document.querySelector('.skillbar');
   const btnSprint = document.getElementById('btnSprint');
   let gameReady = false;
-  if (!gameReady) console.log('Loading assets...');
+  if (!gameReady) {
+    console.log('Loading assets...');
+    loadMsg.textContent = 'Loading assets...';
+  }
   let canDash = false;
 
   const INITIAL_GOAL = 15;
@@ -108,6 +113,7 @@
       this.scale.lockOrientation('landscape');
     }
     if (screen.orientation?.lock) screen.orientation.lock('landscape').catch(()=>{});
+    try {
     const addAnim = (key, prefix) => {
       scene.anims.create({ key: `${key}_idle`, frames: scene.anims.generateFrameNumbers(prefix, { start:0, end: META.frames.idle-1 }), frameRate: 8, repeat: -1 });
       scene.anims.create({ key: `${key}_run`, frames: scene.anims.generateFrameNumbers(prefix, { start:META.frames.idle, end: META.frames.idle+META.frames.run-1 }), frameRate: 14, repeat: -1 });
@@ -146,6 +152,14 @@
 
     gameReady = true;
     btnNew.disabled = btnContinue.disabled = false;
+    loadMsg.textContent = '';
+  } catch(err) {
+    console.error('Game setup failed', err);
+    gameReady = false;
+    btnNew.disabled = btnContinue.disabled = false;
+    loadMsg.style.color = 'var(--bad)';
+    loadMsg.textContent = 'Error loading assets. Please reload the page to try again.';
+  }
 
   }
 
