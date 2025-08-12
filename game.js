@@ -110,6 +110,8 @@
     btnMap.onclick = ()=>{ mm.style.display = mm.style.display?'':'block'; };
     btnPause.onclick = ()=>{ scene.scene.pause(); };
     btnMute.onclick = ()=>{ if(!bgm.paused) bgm.pause(); else { if(sfxToggle.checked) bgm.play(); } };
+    btnNext.onclick = () => { ovWin.style.display='none'; nextLevel(); scene.scene.resume(); };
+    btnRetry.onclick = () => { ovLose.style.display='none'; newGame(); startGame(); scene.scene.resume(); };
 
     updHUD(); if(localStorage.getItem('slot')) btnContinue.style.display='';
     showMenu();
@@ -206,7 +208,7 @@
     });
 
     if(countM>=goal || countY>=goal){ document.getElementById('ovLose').style.display='flex'; document.getElementById('loseMsg').textContent=(countM>=goal?'Merlin':'Yumi')+' war schneller!'; scene.scene.pause(); return; }
-    if(goalCaught>=goal){ document.getElementById('ovWin').style.display='flex'; document.getElementById('winMsg').textContent='Weiter geht\\'s!'; scene.scene.pause(); }
+    if(goalCaught>=goal){ document.getElementById('ovWin').style.display='flex'; document.getElementById('winMsg').textContent="Weiter geht's!"; scene.scene.pause(); }
 
     const cam=scene.cameras.main;
     layers.bg.tilePositionX=cam.scrollX*0.5; layers.bg.tilePositionY=cam.scrollY*0.5;
