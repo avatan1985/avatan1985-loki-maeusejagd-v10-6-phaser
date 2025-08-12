@@ -127,7 +127,7 @@
     btnNext.onclick = () => { ovWin.style.display='none'; nextLevel(); scene.scene.resume(); };
     btnRetry.onclick = () => { ovLose.style.display='none'; newGame(); startGame(); scene.scene.resume(); };
 
-    updHUD(); if(localStorage.getItem('slot')) btnContinue.style.display='';
+    updHUD(); if(localStorage.getItem('slot0') || localStorage.getItem('slot')) btnContinue.style.display='';
     showMenu();
   }
 
@@ -177,8 +177,8 @@
     scene.cameras.main.startFollow(loki, false, 0.5, 0.5);
   }
 
-  function saveSlot(){ const s={lvl,goal,goalCaught,countL,countM,countY}; localStorage.setItem('slot',JSON.stringify(s)); }
-  function loadSlot(){ const s=localStorage.getItem('slot'); if(!s) return false; const o=JSON.parse(s); lvl=o.lvl; goal=o.goal; goalCaught=o.goalCaught; countL=o.countL; countM=o.countM; countY=o.countY; updHUD(); resetWorld(); return true; }
+  function saveSlot(){ const s={lvl,goal,goalCaught,countL,countM,countY}; localStorage.setItem('slot0',JSON.stringify(s)); }
+  function loadSlot(){ const s=localStorage.getItem('slot0') || localStorage.getItem('slot'); if(!s) return false; const o=JSON.parse(s); lvl=o.lvl; goal=o.goal; goalCaught=o.goalCaught; countL=o.countL; countM=o.countM; countY=o.countY; updHUD(); resetWorld(); if(!localStorage.getItem('slot0')) localStorage.setItem('slot0', s); return true; }
 
   function update(time, delta){
     if(state!=='play') return;
