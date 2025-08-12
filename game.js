@@ -98,10 +98,12 @@
 
     keys = scene.input.keyboard.addKeys('W,A,S,D,LEFT,RIGHT,UP,DOWN,SPACE,SHIFT');
     keys.SHIFT.on('down', () => {
-      loki.boost = 1;
-      if (sfxToggle.checked) { sSprint.currentTime = 0; sSprint.play(); }
+      loki.boost = loki.boost ? 0 : 1;
+      if (loki.boost && sfxToggle.checked) {
+        sSprint.currentTime = 0;
+        sSprint.play();
+      }
     });
-    keys.SHIFT.on('up', () => { loki.boost = 0; });
     const prevent = e => e.preventDefault();
     ['touchstart','touchmove','touchend','gesturestart'].forEach(ev=> document.addEventListener(ev, prevent, {passive:false}));
     const cvs = scene.game.canvas;
