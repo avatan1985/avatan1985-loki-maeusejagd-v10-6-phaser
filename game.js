@@ -82,6 +82,32 @@
   initMenu();
   applyLevelUp();
 
+  class MenuScene extends Phaser.Scene {
+    constructor() {
+      super('MenuScene');
+    }
+    preload() {
+      const ext = 'webp';
+      this.load.image('menu_bg', `street.${ext}`);
+      this.load.spritesheet('loki', `loki_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
+      this.load.spritesheet('yumi', `yumi_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
+      this.load.spritesheet('merlin', `merlin_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
+    }
+    create() {
+      this.add.image(0, 0, 'menu_bg').setOrigin(0, 0);
+      const btn = this.add.text(this.scale.width / 2, this.scale.height / 2, 'Neues Spiel', {
+        fontSize: '32px',
+        color: '#fff'
+      }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+      btn.on('pointerdown', () => {
+        startGame();
+        this.scene.start('MainScene');
+      });
+    }
+  }
+
+  const MainScene = { key: 'MainScene', preload, create, update };
+
   const config = {
     type: Phaser.AUTO,
     parent: 'game',
@@ -93,7 +119,7 @@
       height: 720
     },
     physics: { default: 'arcade', arcade: { gravity: { y: 0 }, debug: false } },
-    scene: { preload, create, update }
+    scene: [MenuScene, MainScene]
   };
   const game = new Phaser.Game(config);
   let scene, layers=null, loki, merlin=null, yumi=null, miceGroup, obstGroup;
