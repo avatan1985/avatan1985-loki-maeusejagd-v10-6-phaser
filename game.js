@@ -91,23 +91,6 @@
   initMenu();
   applyLevelUp();
 
-  class MenuScene extends Phaser.Scene {
-    constructor() {
-      super('MenuScene');
-    }
-    create() {
-      this.add.image(0, 0, 'street').setOrigin(0, 0);
-      const btn = this.add.text(this.scale.width / 2, this.scale.height / 2, 'Neues Spiel', {
-        fontSize: '32px',
-        color: '#fff'
-      }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-      btn.on('pointerdown', () => {
-        startGame();
-        this.scene.start('MainScene');
-      });
-    }
-  }
-
   const MainScene = { key: 'MainScene', create, update };
   if (!window.Phaser) {
     loadMsg.textContent = 'Phaser nicht verfügbar';
@@ -223,6 +206,8 @@
     if (skillbar) skillbar.style.display = 'flex';
     resetCooldowns();
     if(bgm.paused && sfxToggle.checked) bgm.play();
+    game.scene.start('MainScene');
+    game.scene.stop('MenuScene');
   }
 
   function showMenu(){
