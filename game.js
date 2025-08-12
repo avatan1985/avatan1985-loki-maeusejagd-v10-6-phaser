@@ -12,7 +12,7 @@
   };
 
   const hud = document.getElementById('hud'), menu = document.getElementById('menu');
-    const cL=document.getElementById('cL'), cM=document.getElementById('cM'), cY=document.getElementById('cY'), xpEl=document.getElementById('xp');
+    const cL=document.getElementById('cL'), cM=document.getElementById('cM'), cY=document.getElementById('cY'), xpEl=document.getElementById('xp'), xpLvlEl=document.getElementById('xpLvl');
     const lvlEl = document.getElementById('lvl'), goalNeed = document.getElementById('goalNeed'), goalLeft = document.getElementById('goalLeft');
   const btnNew = document.getElementById('btnNew'), btnContinue = document.getElementById('btnContinue');
   const btnRestart=document.getElementById('btnRestart'), btnMenu=document.getElementById('btnMenu'), btnMap=document.getElementById('btnMap'), btnPause=document.getElementById('btnPause'), btnMute=document.getElementById('btnMute');
@@ -29,8 +29,8 @@
 
   const INITIAL_GOAL = 15;
     let state='menu',lvl=1,goal=INITIAL_GOAL;
-    let countL=0,countM=0,countY=0,xp=0;
-    function updHUD(){ cL.textContent=countL; cM.textContent=countM; cY.textContent=countY; lvlEl.textContent=lvl; goalNeed.textContent=goal; goalLeft.textContent=Math.max(0, goal-countL); xpEl.textContent=xp; }
+    let countL=0,countM=0,countY=0,xp=0,xpLvl=1,xpTarget=10;
+    function updHUD(){ cL.textContent=countL; cM.textContent=countM; cY.textContent=countY; lvlEl.textContent=lvl; goalNeed.textContent=goal; goalLeft.textContent=Math.max(0, goal-countL); xpEl.textContent=`${xp}/${xpTarget}`; if(xpLvlEl) xpLvlEl.textContent=xpLvl; }
 
   function safeStorageGet(key, fallback=null){ try { return localStorage.getItem(key) ?? fallback; } catch { return fallback; } }
   function safeStorageSet(key, value){ try { localStorage.setItem(key, value); } catch { } }
@@ -176,7 +176,7 @@
   }
 
   function newGame(){
-    lvl=1; goal=INITIAL_GOAL; countL=countM=countY=0; xp=0;
+    lvl=1; goal=INITIAL_GOAL; countL=countM=countY=0; xp=0; xpLvl=1; xpTarget=10;
     updHUD();
     resetWorld();
     resetCooldowns();
@@ -243,13 +243,21 @@
     for (let i = 0; i < maxMice(); i++) spawnMouse();
 
     scene.physics.add.collider(loki, obstGroup);
-    scene.physics.add.overlap(loki, miceGroup, (cat, m)=>{ m.destroy(); countL++; xp++; if(sfxToggle.checked){ sCatch.currentTime=0; sCatch.play(); } updHUD(); checkEnd(); });
+    scene.physics.add.overlap(loki, miceGroup, (cat, m)=>{ m.destroy(); countL++; xp++; checkLevelUp(); if(sfxToggle.checked){ sCatch.currentTime=0; sCatch.play(); } updHUD(); checkEnd(); });
 
     scene.cameras.main.startFollow(loki, false, 0.5, 0.5);
   }
 
     function saveSlot(){ const s={lvl,goal,countL,countM,countY,xp}; safeStorageSet('slot0',JSON.stringify(s)); }
     function loadSlot(){ const s=safeStorageGet('slot0') || safeStorageGet('slot'); if(!s) return false; let o; try{ o=JSON.parse(s); }catch{ return false; } lvl=o.lvl; goal=o.goal; countL=o.countL; countM=o.countM; countY=o.countY; xp=o.xp||0; updHUD(); resetWorld(); if(!safeStorageGet('slot0')) safeStorageSet('slot0', s); return true; }
+
+  function checkLevelUp(){
+    if(xp >= xpTarget){
+      xp -= xpTarget;
+      xpLvl++;
+      xpTarget = Math.floor(xpTarget*1.5);
+    }
+  }
 
   function checkEnd(){
     if(countM>=goal || countY>=goal){
