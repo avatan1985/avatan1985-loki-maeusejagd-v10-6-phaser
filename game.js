@@ -86,13 +86,6 @@
     constructor() {
       super('MenuScene');
     }
-    preload() {
-      const ext = 'webp';
-      this.load.image('menu_bg', `street.${ext}`);
-      this.load.spritesheet('loki', `loki_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
-      this.load.spritesheet('yumi', `yumi_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
-      this.load.spritesheet('merlin', `merlin_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
-    }
     create() {
       this.add.image(0, 0, 'menu_bg').setOrigin(0, 0);
       const btn = this.add.text(this.scale.width / 2, this.scale.height / 2, 'Neues Spiel', {
@@ -106,7 +99,7 @@
     }
   }
 
-  const MainScene = { key: 'MainScene', preload, create, update };
+  const MainScene = { key: 'MainScene', create, update };
 
   const config = {
     type: Phaser.AUTO,
@@ -119,7 +112,7 @@
       height: 720
     },
     physics: { default: 'arcade', arcade: { gravity: { y: 0 }, debug: false } },
-    scene: [MenuScene, MainScene]
+    scene: [BootScene, MenuScene, MainScene]
   };
   const game = new Phaser.Game(config);
   let scene, layers=null, loki, merlin=null, yumi=null, miceGroup, obstGroup;
@@ -128,39 +121,8 @@
   const BASE_MICE = /iPhone|iPad|iPod/.test(navigator.userAgent)?80:100;
   const maxMice = () => Math.floor(BASE_MICE * (1 + 0.5*(lvl-1)));
 
-  function preload(){
-    scene=this;
-
-    scene.load.on('progress', v => {
-      loadMsg.textContent = `Loading ${Math.round(v*100)}%`;
-    });
-    scene.load.on('loaderror', file => {
-      console.error('Failed to load', file.key);
-      loadMsg.style.color = 'var(--bad)';
-      loadMsg.textContent = `Error loading asset: ${file.key}`;
-      loadFailed = true;
-    });
-    scene.load.on('complete', () => {
-      if (!loadFailed) {
-        gameReady = true;
-        btnNew.disabled = btnContinue.disabled = false;
-        loadMsg.textContent = '';
-      }
-    });
-
-    // Only WebP assets are bundled; always request WebP files.
-    const ext = 'webp';
-    for(const b of biomes){
-      // Use the existing single background image for all parallax layers
-      this.load.image(b, `${b}.${ext}`);
-    }
-    this.load.spritesheet('loki', `loki_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
-    this.load.spritesheet('merlin', `merlin_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
-    this.load.spritesheet('yumi', `yumi_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
-    this.load.spritesheet('mouse', `mouse_sheet.${ext}`, { frameWidth: 56, frameHeight: 36 });
-  }
-
   function create(){
+    scene=this;
     if (this.scale.lockOrientation) {
       this.scale.lockOrientation('landscape');
     }
