@@ -81,7 +81,7 @@
   let scene, layers=null, loki, merlin=null, yumi=null, miceGroup, obstGroup;
   let keys;
   let jdx=0,jdy=0, swipeActive=false, swipeStart=null;
-  const BASE_MICE = /iPhone|iPad|iPod/.test(navigator.userAgent)?40:50;
+  const BASE_MICE = /iPhone|iPad|iPod/.test(navigator.userAgent)?80:100;
   const maxMice = () => Math.floor(BASE_MICE * (1 + 0.5*(lvl-1)));
 
   function preload(){
