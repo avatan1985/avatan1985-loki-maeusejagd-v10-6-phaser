@@ -11,7 +11,7 @@
 .pill{background:#14183a;border:1px solid #23284a;border-radius:999px;padding:8px 12px;box-shadow:0 6px 18px rgba(0,0,0,.35);pointer-events:auto}
 .menu{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;z-index:20;background:linear-gradient(180deg,#0b0e1a,#0f1221)}
 .panel{max-width:1000px;width:100%;background:#121534;border:1px solid #23284a;border-radius:16px;padding:16px;box-shadow:0 30px 80px rgba(0,0,0,.35)}
-.panel h1{margin:0 0 8px;font-size:clamp(22px,4vw,42px)} .btn{display:block;width:100%;margin:8px 0;padding:12px 14px;border:1px solid #23284a;background:#0e1230;border-radius:12px;color:#ecf1ff;font-weight:800}
+.panel h1{margin:0 0 8px;font-size:clamp(22px,4vw,42px)} .btn{display:block;width:100%;margin:8px 0;padding:12px 14px;border:1px solid #23284a;background:#0e1230;border-radius:12px;color:#ecf1ff;font-weight:800} .btn:disabled{opacity:.5;pointer-events:none}
 .joy{position:fixed; left: max(16px, env(safe-area-inset-left)); bottom: calc(18px + env(safe-area-inset-bottom)); width:160px; height:160px; border-radius:50%; background:#11162acc; border:1px solid #23284a; touch-action:none; pointer-events:auto; z-index:9}
 .joy.hidden{pointer-events:none; opacity:.15}
 .stick{position:absolute; left:50%; top:50%; width:70px; height:70px; transform:translate(-50%,-50%); border-radius:50%; background:#1c2144; border:2px solid #23284a; box-shadow:0 8px 16px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05)}
@@ -42,8 +42,8 @@
 
 <div class="menu" id="menu"><div class="panel">
   <h1>🐱 Loki – Mäusejagd <small>v10.6 (Phaser) alpha</small></h1>
-  <button class="btn" id="btnContinue" style="display:none">Fortsetzen</button>
-  <button class="btn" id="btnNew">Neues Spiel</button>
+  <button class="btn" id="btnContinue" style="display:none" disabled>Fortsetzen</button>
+  <button class="btn" id="btnNew" disabled>Neues Spiel</button>
   <button class="btn" id="btnSettings">Einstellungen</button>
   <button class="btn" id="btnCredits">Credits</button>
   <div id="settings" style="display:none; margin-top:8px">
