@@ -24,7 +24,8 @@ describe('saveSlot and loadSlot', () => {
     context = {
       localStorage: global.localStorage,
       updHUD: () => {},
-      resetWorld: () => {}
+      resetWorld: () => {},
+      lokiStats: { speed: 1000 }
     };
     vm.createContext(context);
     vm.runInContext(`
@@ -97,22 +98,27 @@ describe('Loki world bounds', () => {
 describe('speed configuration', () => {
   const code = fs.readFileSync(__dirname + '/game.js', 'utf8');
 
-  test('uses updated Loki speed value', () => {
-    const matches = code.match(/loki.speed=1000/g) || [];
-    expect(matches.length).toBe(2);
+  test('lokiStats controls speed and applyLevelUp increases it', () => {
+    expect(code).toMatch(/const lokiStats = \{\s*speed:\s*1000\s*\}/);
+    const initMatch = code.match(/loki.speed\s*=\s*lokiStats.speed/);
+    expect(initMatch).not.toBeNull();
+    const applyMatch = code.match(/function applyLevelUp\(\)\{[^]*?const inc=50;[^]*?lokiStats.speed\s*\+=\s*inc/);
+    expect(applyMatch).not.toBeNull();
   });
 });
 
 describe('nextLevel', () => {
   const code = fs.readFileSync(__dirname + '/game.js', 'utf8');
 
-  test('increments level and resets counters', () => {
+  test('increments level, resets counters, and applies level-up', () => {
     const nextLevelCode = code.match(/function nextLevel\(\)\{[^]*?\}\n/)[0];
     const context = {
       updHUD: () => {},
       resetWorld: () => {},
-      resetCooldowns: () => {}
+      resetCooldowns: () => {},
+      applied: false
     };
+    context.applyLevelUp = () => { context.applied = true; };
     vm.createContext(context);
     vm.runInContext(`
       var lvl=1, goal=15, countL=1, countM=2, countY=3;
@@ -120,11 +126,12 @@ describe('nextLevel', () => {
     `, context);
 
     context.nextLevel();
-    const { lvl, countL, countM, countY } = context;
+    const { lvl, countL, countM, countY, applied } = context;
     expect(lvl).toBe(2);
     expect(countL).toBe(0);
     expect(countM).toBe(0);
     expect(countY).toBe(0);
+    expect(applied).toBe(true);
   });
 });
 

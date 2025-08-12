@@ -14,6 +14,7 @@
   const hud = document.getElementById('hud'), menu = document.getElementById('menu');
     const cL=document.getElementById('cL'), cM=document.getElementById('cM'), cY=document.getElementById('cY'), xpEl=document.getElementById('xp');
     const lvlEl = document.getElementById('lvl'), goalNeed = document.getElementById('goalNeed'), goalLeft = document.getElementById('goalLeft');
+    const statMsg=document.getElementById('statMsg');
   const btnNew = document.getElementById('btnNew'), btnContinue = document.getElementById('btnContinue');
   const btnRestart=document.getElementById('btnRestart'), btnMenu=document.getElementById('btnMenu'), btnMap=document.getElementById('btnMap'), btnPause=document.getElementById('btnPause'), btnMute=document.getElementById('btnMute');
   const ctrl = document.getElementById('ctrl'), joy = document.getElementById('joy'), stick = document.getElementById('stick'), joySize=document.getElementById('joySize');
@@ -31,6 +32,8 @@
     let state='menu',lvl=1,goal=INITIAL_GOAL;
     let countL=0,countM=0,countY=0,xp=0;
     function updHUD(){ cL.textContent=countL; cM.textContent=countM; cY.textContent=countY; lvlEl.textContent=lvl; goalNeed.textContent=goal; goalLeft.textContent=Math.max(0, goal-countL); xpEl.textContent=xp; }
+
+  function showStatMsg(msg){ if(!statMsg) return; statMsg.textContent=msg; statMsg.style.display='block'; setTimeout(()=>{ statMsg.style.display='none'; },2000); }
 
   function safeStorageGet(key, fallback=null){ try { return localStorage.getItem(key) ?? fallback; } catch { return fallback; } }
   function safeStorageSet(key, value){ try { localStorage.setItem(key, value); } catch { } }
@@ -82,6 +85,7 @@
   let keys;
   let jdx=0,jdy=0, swipeActive=false, swipeStart=null;
   const BASE_MICE = /iPhone|iPad|iPod/.test(navigator.userAgent)?80:100;
+  const lokiStats = { speed: 1000 };
   const maxMice = () => Math.floor(BASE_MICE * (1 + 0.5*(lvl-1)));
 
   function preload(){
@@ -111,7 +115,7 @@
     scene.physics.world.setBounds(0,0,WORLD.w,WORLD.h);
 
     initWorld(); // sets up layers, sprites, and camera follow
-    // loki.speed=1000 is configured in initWorld
+    // loki speed is configured in initWorld via lokiStats
 
     keys = scene.input.keyboard.addKeys('W,A,S,D,LEFT,RIGHT,UP,DOWN,SPACE,SHIFT');
     keys.SHIFT.on('down', () => {
@@ -176,15 +180,18 @@
   }
 
   function newGame(){
-    lvl=1; goal=INITIAL_GOAL; countL=countM=countY=0; xp=0;
+    lvl=1; goal=INITIAL_GOAL; countL=countM=countY=0; xp=0; lokiStats.speed=1000;
     updHUD();
     resetWorld();
     resetCooldowns();
   }
 
+  function applyLevelUp(){ const inc=50; lokiStats.speed+=inc; if(loki) loki.speed=lokiStats.speed; showStatMsg(`Geschwindigkeit +${inc}`); }
+
   function nextLevel(){
     lvl++;
     goal = Math.floor(goal*1.1); countL=0; countM=0; countY=0;
+    applyLevelUp();
     updHUD();
     resetWorld();
     resetCooldowns();
@@ -231,7 +238,7 @@
     loki.setScale(scale);
     loki.play('loki_idle');
     loki.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
-    loki.speed=1000; loki.boost=0;
+    loki.speed=lokiStats.speed; loki.boost=0;
     loki.body.setDrag(180, 180);
     loki.setFlipX(loki.body.velocity.x < 0);
 
@@ -249,7 +256,7 @@
   }
 
     function saveSlot(){ const s={lvl,goal,countL,countM,countY,xp}; safeStorageSet('slot0',JSON.stringify(s)); }
-    function loadSlot(){ const s=safeStorageGet('slot0') || safeStorageGet('slot'); if(!s) return false; let o; try{ o=JSON.parse(s); }catch{ return false; } lvl=o.lvl; goal=o.goal; countL=o.countL; countM=o.countM; countY=o.countY; xp=o.xp||0; updHUD(); resetWorld(); if(!safeStorageGet('slot0')) safeStorageSet('slot0', s); return true; }
+    function loadSlot(){ const s=safeStorageGet('slot0') || safeStorageGet('slot'); if(!s) return false; let o; try{ o=JSON.parse(s); }catch{ return false; } lvl=o.lvl; goal=o.goal; countL=o.countL; countM=o.countM; countY=o.countY; xp=o.xp||0; lokiStats.speed=1000+50*(lvl-1); updHUD(); resetWorld(); if(!safeStorageGet('slot0')) safeStorageSet('slot0', s); return true; }
 
   function checkEnd(){
     if(countM>=goal || countY>=goal){
