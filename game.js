@@ -147,7 +147,9 @@
   }
 
   function spawnMouse(){
+    const isGolden = Math.random() < 0.05;
     const m = scene.physics.add.sprite(80+Math.random()*(WORLD.w-160), 80+Math.random()*(WORLD.h-160), 'mouse').play('mouse_run');
+    if(isGolden) m.setTint(0xffd700);
     const d = 36;
     m.setCircle(d / 2, (56 - d) / 2, (36 - d) / 2); // 36px diameter centered in 56×36 sprite
     m.base = 120 + Math.random()*40;
