@@ -26,7 +26,7 @@ describe('saveSlot and loadSlot', () => {
     };
     vm.createContext(context);
     vm.runInContext(`
-      var lvl=1, goal=25, goalCaught=0;
+      var lvl=1, goal=35, goalCaught=0;
       var countL=0, countM=0, countY=0;
       ${saveSlotCode}
       ${loadSlotCode}
