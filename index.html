@@ -69,6 +69,11 @@
 <audio id="sPounce" src="pounce.wav"></audio>
 <audio id="sSprint" src="sprint.wav"></audio>
 
-<script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js" onerror="this.onerror=null;this.src='lib/phaser.min.js';"></script>
+<script>
+if(!window.Phaser){
+  document.body.insertAdjacentHTML('beforeend','<div style="color:red;position:fixed;top:0;left:0;">Phaser konnte nicht geladen werden.</div>');
+}
+</script>
 <script src="game.js?v=107"></script>
 </body></html>
