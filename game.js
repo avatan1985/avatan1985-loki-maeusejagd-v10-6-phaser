@@ -27,7 +27,7 @@
   const skillbar = document.querySelector('.skillbar');
   let gameReady = false;
 
-  const INITIAL_GOAL = 35;
+  const INITIAL_GOAL = 15;
     let state='menu',lvl=1,goal=INITIAL_GOAL,goalCaught=0;
     let countL=0,countM=0,countY=0,xp=0;
     function updHUD(){ cL.textContent=countL; cM.textContent=countM; cY.textContent=countY; lvlEl.textContent=lvl; goalNeed.textContent=goal; goalLeft.textContent=Math.max(0, goal-goalCaught); xpEl.textContent=xp; }
@@ -177,7 +177,7 @@
 
   function nextLevel(){
     lvl++;
-    goal = Math.floor(goal*1.25); goalCaught=0; countL=0; countM=0; countY=0;
+    goal = Math.floor(goal*1.1); goalCaught=0; countL=0; countM=0; countY=0;
     updHUD();
     resetWorld();
     resetCooldowns();

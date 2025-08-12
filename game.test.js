@@ -28,7 +28,7 @@ describe('saveSlot and loadSlot', () => {
     };
     vm.createContext(context);
     vm.runInContext(`
-        var lvl=1, goal=35, goalCaught=0;
+        var lvl=1, goal=15, goalCaught=0;
         var countL=0, countM=0, countY=0, xp=0;
       ${safeGetCode}
       ${safeSetCode}
@@ -116,7 +116,7 @@ describe('nextLevel', () => {
     };
     vm.createContext(context);
     vm.runInContext(`
-      var lvl=1, goal=35, goalCaught=5, countL=1, countM=2, countY=3;
+      var lvl=1, goal=15, goalCaught=5, countL=1, countM=2, countY=3;
       ${nextLevelCode}
     `, context);
 
