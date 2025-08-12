@@ -17,7 +17,7 @@
   const mm = document.getElementById('minimap'), mctx = mm.getContext('2d');
   const ovWin=document.getElementById('ovWin'), winMsg=document.getElementById('winMsg'), btnNext=document.getElementById('btnNext');
   const ovLose=document.getElementById('ovLose'), loseMsg=document.getElementById('loseMsg'), btnRetry=document.getElementById('btnRetry');
-  const bgm = document.getElementById('bgm'); const sCatch=document.getElementById('sCatch'), sPounce=document.getElementById('sPounce'), sSprint=document.getElementById('sprint');
+  const bgm = document.getElementById('bgm'); const sCatch=document.getElementById('sCatch'), sPounce=document.getElementById('sPounce'), sSprint=document.getElementById('sSprint');
 
   let state='menu',lvl=1,goal=25,goalCaught=0;
   let countL=0,countM=0,countY=0;
