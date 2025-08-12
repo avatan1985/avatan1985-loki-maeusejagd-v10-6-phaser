@@ -57,6 +57,20 @@ describe('saveSlot and loadSlot', () => {
   });
 });
 
+describe('catchMouse', () => {
+  const code = fs.readFileSync(__dirname + '/game.js', 'utf8');
+
+  test('overlap destroys mouse and increments counters', () => {
+    const overlap = code.match(/scene\.physics\.add\.overlap\(loki,\s*miceGroup,\s*\(cat,\s*m\)=>\{[^]*?\}\);/);
+    expect(overlap).not.toBeNull();
+    const body = overlap[0];
+    expect(body).toMatch(/m\.destroy\(\)/);
+    expect(body).toMatch(/countL\+\+/);
+    expect(body).toMatch(/goalCaught\+\+/);
+    expect(body).toMatch(/xp\+\+/);
+  });
+});
+
 describe('Loki world bounds', () => {
   const code = fs.readFileSync(__dirname + '/game.js', 'utf8');
 
