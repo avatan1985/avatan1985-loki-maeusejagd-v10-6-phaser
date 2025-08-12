@@ -79,13 +79,14 @@
 
     loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10).setScale(0.6);
     loki.play('loki_idle'); loki.setCircle(26, META.w/2-26, META.h/2-26); loki.speed=360; loki.boost=0;
+    loki.body.setDrag(300, 300);
     miceGroup = scene.physics.add.group({ allowGravity:false });
     for(let i=0;i<26;i++) spawnMouse();
 
     scene.physics.add.collider(loki, obstGroup);
     scene.physics.add.overlap(loki, miceGroup, (cat, m)=>{ m.destroy(); countL++; goalCaught++; if(sfxToggle.checked){ sCatch.currentTime=0; sCatch.play(); } updHUD(); checkEnd(); });
 
-    scene.cameras.main.startFollow(loki, false, 0.14, 0.14);
+    scene.cameras.main.startFollow(loki, false, 0.5, 0.5);
 
     keys = scene.input.keyboard.addKeys('W,A,S,D,LEFT,RIGHT,UP,DOWN,SPACE,SHIFT');
     const prevent = e => e.preventDefault();
@@ -152,10 +153,11 @@
     if(loki){ loki.destroy(); } if(merlin){ merlin.destroy(); merlin=null; } if(yumi){ yumi.destroy(); yumi=null; }
     loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10).setScale(0.6);
     loki.play('loki_idle'); loki.setCircle(26, META.w/2-26, META.h/2-26); loki.speed=360; loki.boost=0;
+    loki.body.setDrag(300, 300);
     scene.physics.add.collider(loki, obstGroup);
     miceGroup.clear(true,true);
     for(let i=0;i<26;i++) spawnMouse();
-    scene.cameras.main.startFollow(loki, false, 0.14, 0.14);
+    scene.cameras.main.startFollow(loki, false, 0.5, 0.5);
   }
 
   function saveSlot(){ const s={lvl,goal,goalCaught,countL,countM,countY}; localStorage.setItem('slot',JSON.stringify(s)); }
