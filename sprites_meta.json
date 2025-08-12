@@ -1,5 +1,5 @@
 {
-  "w": 160,
+  "w": 128,
   "h": 130,
   "rows": {
     "idle": 0,
@@ -7,8 +7,8 @@
     "sprint": 2
   },
   "frames": {
-    "idle": 6,
-    "run": 8,
-    "sprint": 8
+    "idle": 10,
+    "run": 10,
+    "sprint": 10
   }
 }

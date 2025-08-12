@@ -2,7 +2,7 @@
 (() => {
   const DPR = Math.min(2, window.devicePixelRatio || 1);
   const biomes = ['kitchen','garden','garage','street'];
-  const META = {w:160,h:130,rows:{idle:0,run:1,sprint:2},frames:{idle:6,run:8,sprint:8}};
+  const META = {w:128,h:130,rows:{idle:0,run:1,sprint:2},frames:{idle:10,run:10,sprint:10}};
   const WORLD = { w: 4800, h: 3200 };
   const OBST = {
     0:[[600,300,460,60],[1100,500,420,80],[1900,1200,500,60],[2600,800,380,90]],
@@ -53,12 +53,12 @@
     scene=this;
     for(const b of biomes){
       // Use the existing single background image for all parallax layers
-      this.load.image(b, `${b}.webp?v=106`);
+      this.load.image(b, `${b}.webp?v=107`);
     }
-    this.load.spritesheet('loki', 'loki_sheet.webp?v=106', { frameWidth: META.w, frameHeight: META.h });
-    this.load.spritesheet('merlin', 'merlin_sheet.webp?v=106', { frameWidth: META.w, frameHeight: META.h });
-    this.load.spritesheet('yumi', 'yumi_sheet.webp?v=106', { frameWidth: META.w, frameHeight: META.h });
-    this.load.spritesheet('mouse', 'mouse_sheet.webp?v=106', { frameWidth: 56, frameHeight: 36 });
+    this.load.spritesheet('loki', 'loki_sheet.webp?v=107', { frameWidth: META.w, frameHeight: META.h });
+    this.load.spritesheet('merlin', 'merlin_sheet.webp?v=107', { frameWidth: META.w, frameHeight: META.h });
+    this.load.spritesheet('yumi', 'yumi_sheet.webp?v=107', { frameWidth: META.w, frameHeight: META.h });
+    this.load.spritesheet('mouse', 'mouse_sheet.webp?v=107', { frameWidth: 56, frameHeight: 36 });
   }
 
   function create(){
@@ -86,8 +86,8 @@
     }
 
     loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10);
-    const scale = 0.6;
-    const radius = 26 * scale;
+    const scale = 0.75;
+    const radius = 21 * scale;
     loki.setScale(scale);
     loki.play('loki_idle');
     loki.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
@@ -175,8 +175,8 @@
     }
     if(loki){ loki.destroy(); } if(merlin){ merlin.destroy(); merlin=null; } if(yumi){ yumi.destroy(); yumi=null; }
     loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10);
-    const scale = 0.6;
-    const radius = 26 * scale;
+    const scale = 0.75;
+    const radius = 21 * scale;
     loki.setScale(scale);
     loki.play('loki_idle');
     loki.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
@@ -207,8 +207,8 @@
 
     if(lvl>=2 && !merlin){
       merlin = scene.physics.add.sprite(200,200,'merlin');
-      const scale = 0.6;
-      const radius = 26 * scale;
+      const scale = 0.75;
+      const radius = 21 * scale;
       merlin.setScale(scale);
       merlin.play('merlin_run');
       merlin.speed=330;
@@ -218,8 +218,8 @@
     }
     if(lvl>=3 && !yumi){
       yumi = scene.physics.add.sprite(WORLD.w-200,WORLD.h-200,'yumi');
-      const scale = 0.6;
-      const radius = 26 * scale;
+      const scale = 0.75;
+      const radius = 21 * scale;
       yumi.setScale(scale);
       yumi.play('yumi_run');
       yumi.speed=300;
