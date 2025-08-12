@@ -109,6 +109,10 @@
   }
 
   const MainScene = { key: 'MainScene', create, update };
+  if (!window.Phaser) {
+    loadMsg.textContent = 'Phaser nicht verfügbar';
+    return;
+  }
 
   const config = {
     type: Phaser.AUTO,
