@@ -40,6 +40,29 @@
   function applyCfg(){ joy.style.width=joySize.value+'px'; joy.style.height=joySize.value+'px'; mm.style.display = mapToggle.checked?'':'none'; if(ctrl.value==='swipe'){ joy.classList.add('hidden'); } else { joy.classList.remove('hidden'); } safeStorageSet('loki_v10_cfg', JSON.stringify({ ctrl: ctrl.value, map: mapToggle.checked, sfx: sfxToggle.checked, joySize:+joySize.value })); }
   ['input','change'].forEach(ev=> joySize.addEventListener(ev, applyCfg)); ctrl.addEventListener('change',applyCfg); mapToggle.addEventListener('change',applyCfg); sfxToggle.addEventListener('change',applyCfg); applyCfg();
 
+  function initMenu(){
+    document.getElementById('btnSettings').onclick = ()=>{ settings.style.display = settings.style.display? '' : 'block'; credits.style.display='none'; };
+    document.getElementById('btnCredits').onclick = ()=>{ credits.style.display = credits.style.display? '' : 'block'; settings.style.display='none'; };
+    btnNew.onclick = ()=>{ newGame(); startGame(); };
+    btnContinue.onclick = ()=>{ if(loadSlot()) startGame(); else newGame(), startGame(); };
+    btnRestart.onclick = ()=>{ newGame(); startGame(); };
+    btnMenu.onclick = ()=>{ showMenu(); saveSlot(); };
+    btnMap.onclick = ()=>{ mm.style.display = mm.style.display?'':'block'; };
+    btnPause.onclick = ()=>{ scene.scene.pause(); };
+    btnMute.onclick = ()=>{ if(!bgm.paused) bgm.pause(); else { if(sfxToggle.checked) bgm.play(); } };
+    btnNext.onclick = () => { ovWin.style.display='none'; nextLevel(); scene.scene.resume(); };
+    btnRetry.onclick = () => { ovLose.style.display='none'; newGame(); startGame(); scene.scene.resume(); };
+
+    const ensureTouchClick = btn => btn.addEventListener('touchend', () => btn.click());
+    ensureTouchClick(btnNew);
+    ensureTouchClick(btnContinue);
+
+    updHUD(); if(safeStorageGet('slot0') || safeStorageGet('slot')) btnContinue.style.display='';
+    showMenu();
+  }
+
+  initMenu();
+
   const config = {
     type: Phaser.AUTO,
     parent: 'game',
@@ -130,24 +153,6 @@
     function moveStick(e){ const rect=joy.getBoundingClientRect(); const t=e.touches?e.touches[0]:e; const dx=t.clientX-(rect.left+rect.width/2); const dy=t.clientY-(rect.top+rect.height/2); const max=Math.min(rect.width,rect.height)/2 - 18; const len=Math.hypot(dx,dy)||1; const nx=dx/len*Math.min(len,max), ny=dy/len*Math.min(len,max); setStick(nx,ny); const dz=0.12; const rx=(nx/max), ry=(ny/max); jdx = Math.abs(rx)<dz ? 0 : rx; jdy = Math.abs(ry)<dz ? 0 : ry; }
     function setStick(nx,ny){ stick.style.transform = `translate(calc(-50% + ${nx}px), calc(-50% + ${ny}px))`; }
 
-    document.getElementById('btnSettings').onclick = ()=>{ settings.style.display = settings.style.display? '' : 'block'; credits.style.display='none'; };
-    document.getElementById('btnCredits').onclick = ()=>{ credits.style.display = credits.style.display? '' : 'block'; settings.style.display='none'; };
-    btnNew.onclick = ()=>{ newGame(); startGame(); };
-    btnContinue.onclick = ()=>{ if(loadSlot()) startGame(); else newGame(), startGame(); };
-    btnRestart.onclick = ()=>{ newGame(); startGame(); };
-    btnMenu.onclick = ()=>{ showMenu(); saveSlot(); };
-    btnMap.onclick = ()=>{ mm.style.display = mm.style.display?'':'block'; };
-    btnPause.onclick = ()=>{ scene.scene.pause(); };
-    btnMute.onclick = ()=>{ if(!bgm.paused) bgm.pause(); else { if(sfxToggle.checked) bgm.play(); } };
-    btnNext.onclick = () => { ovWin.style.display='none'; nextLevel(); scene.scene.resume(); };
-    btnRetry.onclick = () => { ovLose.style.display='none'; newGame(); startGame(); scene.scene.resume(); };
-
-    const ensureTouchClick = btn => btn.addEventListener('touchend', () => btn.click());
-    ensureTouchClick(btnNew);
-    ensureTouchClick(btnContinue);
-
-    updHUD(); if(safeStorageGet('slot0') || safeStorageGet('slot')) btnContinue.style.display='';
-    showMenu();
   }
 
   function spawnMouse(){
@@ -323,5 +328,7 @@
       mctx.strokeStyle='#23284a'; mctx.strokeRect(cam.scrollX*sx, cam.scrollY*sy, cam.width*sx, cam.height*sy);
     }
   }
+
+  Object.assign(window, { newGame, startGame, showMenu });
 
 })();
