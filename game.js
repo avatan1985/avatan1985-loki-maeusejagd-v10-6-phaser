@@ -16,6 +16,8 @@
   const lvlEl = document.getElementById('lvl'), goalNeed = document.getElementById('goalNeed'), goalLeft = document.getElementById('goalLeft');
   const btnNew = document.getElementById('btnNew'), btnContinue = document.getElementById('btnContinue');
   const btnRestart=document.getElementById('btnRestart'), btnMenu=document.getElementById('btnMenu'), btnMap=document.getElementById('btnMap'), btnPause=document.getElementById('btnPause'), btnMute=document.getElementById('btnMute');
+  const btnPounce=document.getElementById('btnPounce'), btnSprint=document.getElementById('btnSprint'), btnSense=document.getElementById('btnSense');
+  const skillbar=document.querySelector('.skillbar');
   const ctrl = document.getElementById('ctrl'), joy = document.getElementById('joy'), stick = document.getElementById('stick'), joySize=document.getElementById('joySize');
   const mapToggle = document.getElementById('mapToggle'), sfxToggle=document.getElementById('sfxToggle');
   const btnSettings=document.getElementById('btnSettings'), btnCredits=document.getElementById('btnCredits');
@@ -29,6 +31,11 @@
   let state='menu',lvl=1,goal=INITIAL_GOAL,goalCaught=0;
   let countL=0,countM=0,countY=0;
   function updHUD(){ cL.textContent=countL; cM.textContent=countM; cY.textContent=countY; lvlEl.textContent=lvl; goalNeed.textContent=goal; goalLeft.textContent=Math.max(0, goal-goalCaught); }
+
+  const SKILL_CD = { pounce:5000, sprint:8000, sense:10000 };
+  const SPRINT_DURATION = 3000, SENSE_DURATION = 4000;
+  const skillCD = { pounce:0, sprint:0, sense:0 };
+  let sprintEnd = 0;
 
   const cfg = JSON.parse(localStorage.getItem('loki_v10_cfg')||'{}');
   ctrl.value = cfg.ctrl || 'joystick'; mapToggle.checked = (cfg.map ?? true); sfxToggle.checked = (cfg.sfx ?? true); joySize.value = cfg.joySize || 160;
@@ -131,14 +138,54 @@
     btnRestart.onclick = ()=>{ newGame(); startGame(); };
     btnMenu.onclick = ()=>{ showMenu(); saveSlot(); };
     btnMap.onclick = ()=>{ mm.style.display = mm.style.display?'':'block'; };
-    btnPause.onclick = ()=>{ scene.scene.pause(); };
+    btnPause.onclick = ()=>{ resetCooldowns(); scene.scene.pause(); };
     btnMute.onclick = ()=>{ if(!bgm.paused) bgm.pause(); else { if(sfxToggle.checked) bgm.play(); } };
     btnNext.onclick = () => { ovWin.style.display='none'; nextLevel(); scene.scene.resume(); };
     btnRetry.onclick = () => { ovLose.style.display='none'; newGame(); startGame(); scene.scene.resume(); };
 
+    btnPounce.onclick = () => {
+      const now = performance.now();
+      if(now < skillCD.pounce) return;
+      let target=null, td=1e9;
+      miceGroup.children.iterate(m=>{ if(!m) return; const d=Phaser.Math.Distance.Between(loki.x,loki.y,m.x,m.y); if(d<td){td=d; target=m;} });
+      if(target){
+        loki.setPosition(target.x, target.y);
+        target.destroy(); countL++; goalCaught++; updHUD(); checkEnd();
+        if(sfxToggle.checked){ sPounce.currentTime=0; sPounce.play(); }
+      }
+      skillCD.pounce = now + SKILL_CD.pounce;
+    };
+
+    btnSprint.onclick = () => {
+      const now = performance.now();
+      if(now < skillCD.sprint) return;
+      loki.boost = 1; sprintEnd = now + SPRINT_DURATION;
+      if(sfxToggle.checked){ sSprint.currentTime=0; sSprint.play(); }
+      skillCD.sprint = now + SKILL_CD.sprint;
+    };
+
+    btnSense.onclick = () => {
+      const now = performance.now();
+      if(now < skillCD.sense) return;
+      miceGroup.children.iterate(m=>{
+        if(!m) return;
+        const d=Phaser.Math.Distance.Between(loki.x,loki.y,m.x,m.y);
+        if(d<250){
+          if(!m._origBase) m._origBase=m.base;
+          m.base *= 0.5; m.body.velocity.scale(0.5);
+          m.slowUntil = now + SENSE_DURATION;
+          m.setTint(0xff8888);
+        }
+      });
+      skillCD.sense = now + SKILL_CD.sense;
+    };
+
     const ensureTouchClick = btn => btn.addEventListener('touchend', () => btn.click());
     ensureTouchClick(btnNew);
     ensureTouchClick(btnContinue);
+    ensureTouchClick(btnPounce);
+    ensureTouchClick(btnSprint);
+    ensureTouchClick(btnSense);
 
     updHUD(); if(localStorage.getItem('slot0') || localStorage.getItem('slot')) btnContinue.style.display='';
     showMenu();
@@ -157,10 +204,20 @@
     return m;
   }
 
-  function startGame(){ state='play'; hud.style.display='flex'; menu.style.display='none'; if(bgm.paused && sfxToggle.checked) bgm.play(); }
-  function showMenu(){ state='menu'; hud.style.display='none'; menu.style.display='flex'; }
+  function resetCooldowns(){
+    for(const k in skillCD) skillCD[k]=0;
+    btnPounce.removeAttribute('data-cd');
+    btnSprint.removeAttribute('data-cd');
+    btnSense.removeAttribute('data-cd');
+    sprintEnd=0;
+    if(loki) loki.boost=0;
+    if(miceGroup) miceGroup.children.iterate(m=>{ if(!m) return; if(m._origBase){ m.base=m._origBase; delete m._origBase; } m.clearTint(); delete m.slowUntil; });
+  }
+
+  function startGame(){ state='play'; hud.style.display='flex'; menu.style.display='none'; skillbar.style.display='flex'; resetCooldowns(); if(bgm.paused && sfxToggle.checked) bgm.play(); }
+  function showMenu(){ state='menu'; hud.style.display='none'; menu.style.display='flex'; skillbar.style.display='none'; resetCooldowns(); }
   function newGame(){ lvl=1; goal=INITIAL_GOAL; goalCaught=0; countL=countM=countY=0; updHUD(); resetWorld(); }
-  function nextLevel(){ goal = Math.floor(goal*1.25); goalCaught=0; countL=0; countM=0; countY=0; updHUD(); resetWorld(); }
+  function nextLevel(){ goal = Math.floor(goal*1.25); goalCaught=0; countL=0; countM=0; countY=0; updHUD(); resetWorld(); resetCooldowns(); }
 
   function resetWorld(){
     scene.cameras.main.stopFollow();
@@ -213,6 +270,10 @@
   function update(time, delta){
     if(state!=='play') return;
     const dt = Math.min(0.02, delta/1000);
+    const now = performance.now();
+    if(loki.boost && now > sprintEnd) loki.boost = 0;
+    const btns = {pounce:btnPounce, sprint:btnSprint, sense:btnSense};
+    for(const k in skillCD){ const rem=Math.ceil((skillCD[k]-now)/1000); if(rem>0) btns[k].dataset.cd=rem; else btns[k].removeAttribute('data-cd'); }
     if(miceGroup.countActive(true) < maxMice()) spawnMouse();
     const left = keys.A.isDown || keys.LEFT.isDown;
     const right = keys.D.isDown || keys.RIGHT.isDown;
@@ -257,6 +318,7 @@
 
     miceGroup.children.iterate(m => {
       if(!m) return;
+      if(m.slowUntil && now > m.slowUntil){ m.base=m._origBase||m.base; delete m._origBase; m.clearTint(); delete m.slowUntil; }
       const targets = [loki,merlin,yumi].filter(Boolean);
       let nearest=null, nd=1e9;
       targets.forEach(t=>{ const d=Phaser.Math.Distance.Between(m.x,m.y,t.x,t.y); if(d<nd){nd=d; nearest=t;} });
