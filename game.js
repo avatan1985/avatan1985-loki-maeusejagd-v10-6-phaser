@@ -191,6 +191,22 @@
   function saveSlot(){ const s={lvl,goal,goalCaught,countL,countM,countY}; localStorage.setItem('slot0',JSON.stringify(s)); }
   function loadSlot(){ const s=localStorage.getItem('slot0') || localStorage.getItem('slot'); if(!s) return false; const o=JSON.parse(s); lvl=o.lvl; goal=o.goal; goalCaught=o.goalCaught; countL=o.countL; countM=o.countM; countY=o.countY; updHUD(); resetWorld(); if(!localStorage.getItem('slot0')) localStorage.setItem('slot0', s); return true; }
 
+  function checkEnd(){
+    if(countM>=goal || countY>=goal){
+      ovLose.style.display='flex';
+      loseMsg.textContent=(countM>=goal?'Merlin':'Yumi')+' war schneller!';
+      scene.scene.pause();
+      return true;
+    }
+    if(goalCaught>=goal){
+      ovWin.style.display='flex';
+      winMsg.textContent="Weiter geht's!";
+      scene.scene.pause();
+      return true;
+    }
+    return false;
+  }
+
   function update(time, delta){
     if(state!=='play') return;
     const dt = Math.min(0.02, delta/1000);
@@ -249,8 +265,7 @@
       m.setFlipX(m.body.velocity.x < 0);
     });
 
-    if(countM>=goal || countY>=goal){ document.getElementById('ovLose').style.display='flex'; document.getElementById('loseMsg').textContent=(countM>=goal?'Merlin':'Yumi')+' war schneller!'; scene.scene.pause(); return; }
-    if(goalCaught>=goal){ document.getElementById('ovWin').style.display='flex'; document.getElementById('winMsg').textContent="Weiter geht's!"; scene.scene.pause(); }
+    if(checkEnd()) return;
 
     const cam=scene.cameras.main;
     layers.far.tilePositionX=cam.scrollX*0.2; layers.far.tilePositionY=cam.scrollY*0.2;
