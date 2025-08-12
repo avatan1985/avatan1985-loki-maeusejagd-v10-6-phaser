@@ -3,7 +3,7 @@
   const DPR = Math.min(2, window.devicePixelRatio || 1);
   const biomes = ['kitchen','garden','garage','street'];
   const META = {w:160,h:130,rows:{idle:0,run:1,sprint:2},frames:{idle:6,run:8,sprint:8}};
-  const WORLD = { w: 4200, h: 2800 };
+  const WORLD = { w: 4800, h: 3200 };
 
   const hud = document.getElementById('hud'), menu = document.getElementById('menu');
   const cL=document.getElementById('cL'), cM=document.getElementById('cM'), cY=document.getElementById('cY');
