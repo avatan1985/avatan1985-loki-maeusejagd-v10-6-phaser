@@ -11,6 +11,17 @@
     3:[[600,600,600,100],[1700,900,500,90],[2600,700,420,90],[3400,1200,480,100]]
   };
 
+  const supportsWebP = (() => {
+    try {
+      return document
+        .createElement('canvas')
+        .toDataURL('image/webp')
+        .startsWith('data:image/webp');
+    } catch {
+      return false;
+    }
+  })();
+
   const hud = document.getElementById('hud'), menu = document.getElementById('menu');
     const cL=document.getElementById('cL'), cM=document.getElementById('cM'), cY=document.getElementById('cY'), xpEl=document.getElementById('xp'), xpLvlEl=document.getElementById('xpLvl');
     const lvlEl = document.getElementById('lvl'), goalNeed = document.getElementById('goalNeed'), goalLeft = document.getElementById('goalLeft');
@@ -98,14 +109,15 @@
 
   function preload(){
     scene=this;
+    const ext = supportsWebP ? 'webp' : 'png';
     for(const b of biomes){
       // Use the existing single background image for all parallax layers
-      this.load.image(b, `${b}.webp`);
+      this.load.image(b, `${b}.${ext}`);
     }
-    this.load.spritesheet('loki', 'loki_sheet.webp', { frameWidth: META.w, frameHeight: META.h });
-    this.load.spritesheet('merlin', 'merlin_sheet.webp', { frameWidth: META.w, frameHeight: META.h });
-    this.load.spritesheet('yumi', 'yumi_sheet.webp', { frameWidth: META.w, frameHeight: META.h });
-    this.load.spritesheet('mouse', 'mouse_sheet.webp', { frameWidth: 56, frameHeight: 36 });
+    this.load.spritesheet('loki', `loki_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
+    this.load.spritesheet('merlin', `merlin_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
+    this.load.spritesheet('yumi', `yumi_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
+    this.load.spritesheet('mouse', `mouse_sheet.${ext}`, { frameWidth: 56, frameHeight: 36 });
   }
 
   function create(){
