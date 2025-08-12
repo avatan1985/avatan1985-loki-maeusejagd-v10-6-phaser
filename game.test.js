@@ -56,3 +56,12 @@ describe('saveSlot and loadSlot', () => {
       });
   });
 });
+
+describe('speed configuration', () => {
+  test('loki uses updated base speed and boost', () => {
+    const code = fs.readFileSync(__dirname + '/game.js', 'utf8');
+    const speedMatches = code.match(/loki\.speed=1050/g) || [];
+    expect(speedMatches.length).toBe(2);
+    expect(code.includes('loki.boost?280:0')).toBe(true);
+  });
+});

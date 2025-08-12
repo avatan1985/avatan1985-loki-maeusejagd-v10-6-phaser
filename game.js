@@ -93,7 +93,8 @@
     loki.setScale(scale);
     loki.play('loki_idle');
     loki.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
-    loki.speed=750; loki.boost=0;
+    loki.speed=1050; loki.boost=0;
+    console.debug('Loki base speed set to', loki.speed);
     loki.body.setDrag(180, 180);
     loki.setFlipX(loki.body.velocity.x < 0);
     miceGroup = scene.physics.add.group({ allowGravity:false });
@@ -213,7 +214,8 @@
     loki.setScale(scale);
     loki.play('loki_idle');
     loki.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
-    loki.speed=750; loki.boost=0;
+    loki.speed=1050; loki.boost=0;
+    console.debug('Loki base speed set to', loki.speed);
     loki.body.setDrag(180, 180);
     loki.setFlipX(loki.body.velocity.x < 0);
     scene.physics.add.collider(loki, obstGroup);
@@ -252,7 +254,7 @@
     let ax = (left?-1:0) + (right?1:0) + jdx;
     let ay = (up?-1:0) + (down?1:0) + jdy;
     let len = Math.hypot(ax,ay)||1; ax/=len; ay/=len;
-    loki.body.setVelocity(ax*(loki.speed+(loki.boost?200:0)), ay*(loki.speed+(loki.boost?200:0)));
+    loki.body.setVelocity(ax*(loki.speed+(loki.boost?280:0)), ay*(loki.speed+(loki.boost?280:0)));
     loki.setFlipX(loki.body.velocity.x < 0);
     loki.play(Math.hypot(loki.body.velocity.x,loki.body.velocity.y)>30 ? (loki.boost?'loki_sprint':'loki_run') : 'loki_idle', true);
 
