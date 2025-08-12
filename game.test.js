@@ -90,3 +90,12 @@ describe('Loki world bounds', () => {
     expect(collideIdx).toBeGreaterThan(spriteIdx);
   });
 });
+
+describe('speed configuration', () => {
+  const code = fs.readFileSync(__dirname + '/game.js', 'utf8');
+
+  test('uses updated Loki speed value', () => {
+    const matches = code.match(/loki.speed=1000/g) || [];
+    expect(matches.length).toBe(2);
+  });
+});
