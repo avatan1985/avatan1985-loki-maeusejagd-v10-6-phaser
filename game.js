@@ -15,6 +15,7 @@
     const cL=document.getElementById('cL'), cM=document.getElementById('cM'), cY=document.getElementById('cY'), xpEl=document.getElementById('xp'), xpLvlEl=document.getElementById('xpLvl');
     const lvlEl = document.getElementById('lvl'), goalNeed = document.getElementById('goalNeed'), goalLeft = document.getElementById('goalLeft');
   const btnNew = document.getElementById('btnNew'), btnContinue = document.getElementById('btnContinue');
+  btnNew.disabled = btnContinue.disabled = true;
   const loadMsg = document.createElement('div');
   loadMsg.id = 'loadMsg';
   loadMsg.style.marginTop = '8px';
@@ -156,7 +157,7 @@
   } catch(err) {
     console.error('Game setup failed', err);
     gameReady = false;
-    btnNew.disabled = btnContinue.disabled = false;
+    btnNew.disabled = btnContinue.disabled = true;
     loadMsg.style.color = 'var(--bad)';
     loadMsg.textContent = 'Error loading assets. Please reload the page to try again.';
   }
