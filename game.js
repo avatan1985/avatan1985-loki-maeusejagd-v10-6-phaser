@@ -87,7 +87,7 @@
       super('MenuScene');
     }
     create() {
-      this.add.image(0, 0, 'menu_bg').setOrigin(0, 0);
+      this.add.image(0, 0, 'street').setOrigin(0, 0);
       const btn = this.add.text(this.scale.width / 2, this.scale.height / 2, 'Neues Spiel', {
         fontSize: '32px',
         color: '#fff'

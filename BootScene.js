@@ -24,9 +24,10 @@ class BootScene extends Phaser.Scene {
 
     const ext = 'webp';
     for (const b of biomes) {
-      this.load.image(b, `${b}.${ext}`);
+      if (!this.textures.exists(b)) {
+        this.load.image(b, `${b}.${ext}`);
+      }
     }
-    this.load.image('menu_bg', `street.${ext}`);
     this.load.spritesheet('loki', `loki_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
     this.load.spritesheet('merlin', `merlin_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
     this.load.spritesheet('yumi', `yumi_sheet.${ext}`, { frameWidth: META.w, frameHeight: META.h });
