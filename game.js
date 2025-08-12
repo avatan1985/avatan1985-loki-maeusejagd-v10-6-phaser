@@ -29,8 +29,18 @@
 
   const INITIAL_GOAL = 15;
     let state='menu',lvl=1,goal=INITIAL_GOAL;
-    let countL=0,countM=0,countY=0,xp=0;
+    let countL=0,countM=0,countY=0,xp=0,xpLvl=1,xpTarget=5,canDash=false;
     function updHUD(){ cL.textContent=countL; cM.textContent=countM; cY.textContent=countY; lvlEl.textContent=lvl; goalNeed.textContent=goal; goalLeft.textContent=Math.max(0, goal-countL); xpEl.textContent=xp; }
+
+  function checkLevelUp(){
+    if(xp >= xpTarget){
+      xp -= xpTarget;
+      xpLvl++;
+      xpTarget = Math.ceil(xpTarget * 1.5);
+      if(!canDash && xpLvl >= 2) canDash = true;
+      if(loki) loki.speed += 50;
+    }
+  }
 
   function safeStorageGet(key, fallback=null){ try { return localStorage.getItem(key) ?? fallback; } catch { return fallback; } }
   function safeStorageSet(key, value){ try { localStorage.setItem(key, value); } catch { } }
@@ -243,7 +253,7 @@
     for (let i = 0; i < maxMice(); i++) spawnMouse();
 
     scene.physics.add.collider(loki, obstGroup);
-    scene.physics.add.overlap(loki, miceGroup, (cat, m)=>{ m.destroy(); countL++; xp++; if(sfxToggle.checked){ sCatch.currentTime=0; sCatch.play(); } updHUD(); checkEnd(); });
+    scene.physics.add.overlap(loki, miceGroup, (cat, m)=>{ m.destroy(); countL++; xp++; if(sfxToggle.checked){ sCatch.currentTime=0; sCatch.play(); } updHUD(); checkLevelUp(); checkEnd(); });
 
     scene.cameras.main.startFollow(loki, false, 0.5, 0.5);
   }

@@ -155,3 +155,36 @@ describe('minimap toggle', () => {
     expect(context.mm.style.display).toBe('none');
   });
 });
+
+describe('checkLevelUp', () => {
+  const code = fs.readFileSync(__dirname + '/game.js', 'utf8');
+  const start = code.indexOf('function checkLevelUp');
+  const end = code.indexOf('function safeStorageGet', start);
+  const checkLevelUpCode = code.slice(start, end);
+
+  test('xp below target does not level up; xp meeting target does', () => {
+    const context = { xp: 4, xpTarget: 5, xpLvl: 1, canDash: false, loki: { speed: 100 } };
+    vm.createContext(context);
+    vm.runInContext(`${checkLevelUpCode}`, context);
+
+    context.checkLevelUp();
+    expect(context.xpLvl).toBe(1);
+    expect(context.xp).toBe(4);
+    expect(context.canDash).toBe(false);
+
+    context.xp = 5;
+    context.checkLevelUp();
+    expect(context.xpLvl).toBe(2);
+    expect(context.xp).toBe(0);
+    expect(context.canDash).toBe(true);
+  });
+
+  test('level up increases speed', () => {
+    const context = { xp: 5, xpTarget: 5, xpLvl: 1, canDash: false, loki: { speed: 100 } };
+    vm.createContext(context);
+    vm.runInContext(`${checkLevelUpCode}`, context);
+
+    context.checkLevelUp();
+    expect(context.loki.speed).toBeGreaterThan(100);
+  });
+});
