@@ -61,6 +61,15 @@
   function safeStorageGet(key, fallback=null){ try { return localStorage.getItem(key) ?? fallback; } catch { return fallback; } }
   function safeStorageSet(key, value){ try { localStorage.setItem(key, value); } catch { } }
 
+  // Prevent crashes on devices lacking vibration support
+  function safeVibrate(pattern){
+    try{
+      if (navigator && typeof navigator.vibrate === 'function') {
+        navigator.vibrate(pattern);
+      }
+    }catch{}
+  }
+
   let cfg={};
   try { cfg = JSON.parse(safeStorageGet('loki_v10_cfg','{}')); } catch { cfg={}; }
   ctrl.value = cfg.ctrl || 'joystick'; mapToggle.checked = (cfg.map ?? true); sfxToggle.checked = (cfg.sfx ?? true); joySize.value = cfg.joySize || 160;
@@ -287,7 +296,19 @@
     for (let i = 0; i < maxMice(); i++) spawnMouse();
 
     scene.physics.add.collider(loki, obstGroup);
-    scene.physics.add.overlap(loki, miceGroup, (cat, m)=>{ m.destroy(); countL++; xp++; checkLevelUp(); if(sfxToggle.checked){ sCatch.currentTime=0; sCatch.play(); } updHUD(); checkEnd(); });
+    scene.physics.add.overlap(loki, miceGroup, (cat, m)=>{
+      m.destroy();
+      countL++;
+      xp++;
+      checkLevelUp();
+      if(sfxToggle.checked){
+        sCatch.currentTime=0;
+        sCatch.play();
+      }
+      safeVibrate(50);
+      updHUD();
+      checkEnd();
+    });
 
     scene.cameras.main.startFollow(loki, false, 0.5, 0.5);
   }
