@@ -37,10 +37,10 @@
   const bgm = document.getElementById('bgm'); const sCatch=document.getElementById('sCatch'), sPounce=document.getElementById('sPounce'), sSprint=document.getElementById('sSprint');
   const skillbar = document.querySelector('.skillbar');
   const btnSprint = document.getElementById('btnSprint');
-  let gameReady = false;
+  let gameReady = false, loadFailed = false;
   if (!gameReady) {
     console.log('Loading assets...');
-    loadMsg.textContent = 'Loading assets...';
+    loadMsg.textContent = 'Loading 0%';
   }
   let canDash = false;
 
@@ -104,6 +104,24 @@
 
   function preload(){
     scene=this;
+
+    scene.load.on('progress', v => {
+      loadMsg.textContent = `Loading ${Math.round(v*100)}%`;
+    });
+    scene.load.on('loaderror', file => {
+      console.error('Failed to load', file.key);
+      loadMsg.style.color = 'var(--bad)';
+      loadMsg.textContent = `Error loading asset: ${file.key}`;
+      loadFailed = true;
+    });
+    scene.load.on('complete', () => {
+      if (!loadFailed) {
+        gameReady = true;
+        btnNew.disabled = btnContinue.disabled = false;
+        loadMsg.textContent = '';
+      }
+    });
+
     // Only WebP assets are bundled; always request WebP files.
     const ext = 'webp';
     for(const b of biomes){
@@ -158,9 +176,6 @@
     function moveStick(e){ const rect=joy.getBoundingClientRect(); const t=e.touches?e.touches[0]:e; const dx=t.clientX-(rect.left+rect.width/2); const dy=t.clientY-(rect.top+rect.height/2); const max=Math.min(rect.width,rect.height)/2 - 18; const len=Math.hypot(dx,dy)||1; const nx=dx/len*Math.min(len,max), ny=dy/len*Math.min(len,max); setStick(nx,ny); const dz=0.12; const rx=(nx/max), ry=(ny/max); jdx = Math.abs(rx)<dz ? 0 : rx; jdy = Math.abs(ry)<dz ? 0 : ry; }
     function setStick(nx,ny){ stick.style.transform = `translate(calc(-50% + ${nx}px), calc(-50% + ${ny}px))`; }
 
-    gameReady = true;
-    btnNew.disabled = btnContinue.disabled = false;
-    loadMsg.textContent = '';
   } catch(err) {
     console.error('Game setup failed', err);
     gameReady = false;
