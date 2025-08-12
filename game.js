@@ -86,8 +86,8 @@
     }
 
     loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10).setScale(0.6);
-    loki.play('loki_idle'); loki.setCircle(26, META.w/2-26, META.h/2-26); loki.speed=480; loki.boost=0;
-    loki.body.setDrag(300, 300);
+    loki.play('loki_idle'); loki.setCircle(26, META.w/2-26, META.h/2-26); loki.speed=600; loki.boost=0;
+    loki.body.setDrag(180, 180);
     miceGroup = scene.physics.add.group({ allowGravity:false });
     for (let i = 0; i < MAX_MICE; i++) spawnMouse();
 
@@ -165,8 +165,8 @@
     }
     if(loki){ loki.destroy(); } if(merlin){ merlin.destroy(); merlin=null; } if(yumi){ yumi.destroy(); yumi=null; }
     loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10).setScale(0.6);
-    loki.play('loki_idle'); loki.setCircle(26, META.w/2-26, META.h/2-26); loki.speed=480; loki.boost=0;
-    loki.body.setDrag(300, 300);
+    loki.play('loki_idle'); loki.setCircle(26, META.w/2-26, META.h/2-26); loki.speed=600; loki.boost=0;
+    loki.body.setDrag(180, 180);
     scene.physics.add.collider(loki, obstGroup);
     miceGroup.clear(true,true);
     for (let i = 0; i < MAX_MICE; i++) spawnMouse();
@@ -186,7 +186,7 @@
     let ax = (left?-1:0) + (right?1:0) + jdx;
     let ay = (up?-1:0) + (down?1:0) + jdy;
     let len = Math.hypot(ax,ay)||1; ax/=len; ay/=len;
-    loki.body.setVelocity(ax*(loki.speed+(loki.boost?160:0)), ay*(loki.speed+(loki.boost?160:0)));
+    loki.body.setVelocity(ax*(loki.speed+(loki.boost?200:0)), ay*(loki.speed+(loki.boost?200:0)));
     loki.play(Math.hypot(loki.body.velocity.x,loki.body.velocity.y)>30 ? (loki.boost?'loki_sprint':'loki_run') : 'loki_idle', true);
 
     if(lvl>=2 && !merlin){
