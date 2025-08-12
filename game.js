@@ -58,7 +58,7 @@
       scene.anims.create({ key: `${key}_sprint`, frames: scene.anims.generateFrameNumbers(prefix, { start:META.frames.idle+META.frames.run, end: META.frames.idle+META.frames.run+META.frames.sprint-1 }), frameRate: 16, repeat: -1 });
     };
     addAnim('loki','loki'); addAnim('merlin','merlin'); addAnim('yumi','yumi');
-    scene.anims.create({ key:'mouse_run', frames: scene.anims.generateFrameNumbers('mouse', { start:0, end:7 }), frameRate: 12, repeat: -1 });
+    scene.anims.create({ key:'mouse_run', frames: scene.anims.generateFrameNumbers('mouse', { start:0, end:7 }), frameRate: 16, repeat: -1 });
 
     scene.cameras.main.setBounds(0,0,WORLD.w,WORLD.h);
     scene.physics.world.setBounds(0,0,WORLD.w,WORLD.h);
@@ -120,9 +120,10 @@
   function spawnMouse(){
     const m = scene.physics.add.sprite(80+Math.random()*(WORLD.w-160), 80+Math.random()*(WORLD.h-160), 'mouse').play('mouse_run');
     m.setCircle(10, 20, 14);
-    m.base = 120 + Math.random()*60;
+    m.base = 160 + Math.random()*80;
     m.dir = new Phaser.Math.Vector2((Math.random()*2-1),(Math.random()*2-1)).normalize();
     m.body.setVelocity(m.dir.x*m.base, m.dir.y*m.base);
+    m.setFlipX(m.body.velocity.x < 0);
     m.setBounce(1,1).setCollideWorldBounds(true);
     scene.physics.add.collider(m, obstGroup);
     miceGroup.add(m);
@@ -201,10 +202,11 @@
       targets.forEach(t=>{ const d=Phaser.Math.Distance.Between(m.x,m.y,t.x,t.y); if(d<nd){nd=d; nearest=t;} });
       if(nearest && nd<280){
         const ang = Phaser.Math.Angle.Between(nearest.x,nearest.y,m.x,m.y);
-        scene.physics.velocityFromRotation(ang, Math.min(240, m.base+120), m.body.velocity);
+        scene.physics.velocityFromRotation(ang, Math.min(320, m.base+160), m.body.velocity);
       } else {
         if(Math.random()<0.01){ const ang=Math.random()*Math.PI*2; scene.physics.velocityFromRotation(ang, m.base, m.body.velocity); }
       }
+      m.setFlipX(m.body.velocity.x < 0);
     });
 
     if(countM>=goal || countY>=goal){ document.getElementById('ovLose').style.display='flex'; document.getElementById('loseMsg').textContent=(countM>=goal?'Merlin':'Yumi')+' war schneller!'; scene.scene.pause(); return; }
