@@ -38,6 +38,15 @@
   const skillbar = document.querySelector('.skillbar');
   const btnSprint = document.getElementById('btnSprint');
   let gameReady = false, loadFailed = false;
+  Object.assign(window, { biomes, META, loadMsg, btnNew, btnContinue });
+  Object.defineProperty(window, 'gameReady', {
+    get: () => gameReady,
+    set: v => { gameReady = v; }
+  });
+  Object.defineProperty(window, 'loadFailed', {
+    get: () => loadFailed,
+    set: v => { loadFailed = v; }
+  });
   if (!gameReady) {
     console.log('Loading assets...');
     loadMsg.textContent = 'Loading 0%';
