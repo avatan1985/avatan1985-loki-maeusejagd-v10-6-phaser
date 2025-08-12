@@ -57,6 +57,26 @@ describe('saveSlot and loadSlot', () => {
   });
 });
 
+describe('speed configuration', () => {
+  const code = fs.readFileSync(__dirname + '/game.js', 'utf8');
+
+  test('create sets correct speed and boost', () => {
+    const createSection = code.match(/function create\(\)[^]*?scene\.cameras\.main\.startFollow/)[0];
+    const speedIdx = createSection.indexOf('loki.speed=750');
+    expect(speedIdx).toBeGreaterThan(-1);
+    const boostIdx = createSection.indexOf('loki.boost=0', speedIdx);
+    expect(boostIdx).toBeGreaterThan(speedIdx);
+  });
+
+  test('resetWorld sets correct speed and boost', () => {
+    const resetSection = code.match(/function resetWorld\(\)[^]*?scene\.cameras\.main\.startFollow/)[0];
+    const speedIdx = resetSection.indexOf('loki.speed=750');
+    expect(speedIdx).toBeGreaterThan(-1);
+    const boostIdx = resetSection.indexOf('loki.boost=0', speedIdx);
+    expect(boostIdx).toBeGreaterThan(speedIdx);
+  });
+});
+
 describe('Loki world bounds', () => {
   const code = fs.readFileSync(__dirname + '/game.js', 'utf8');
 
