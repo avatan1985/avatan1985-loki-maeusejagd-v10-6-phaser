@@ -86,8 +86,13 @@
       obstGroup.add(r);
     }
 
-    loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10).setScale(0.6);
-    loki.play('loki_idle'); loki.setCircle(26, META.w/2-26, META.h/2-26); loki.speed=750; loki.boost=0;
+    loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10);
+    const scale = 0.6;
+    const radius = 26 * scale;
+    loki.setScale(scale);
+    loki.play('loki_idle');
+    loki.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
+    loki.speed=750; loki.boost=0;
     loki.body.setDrag(180, 180);
     miceGroup = scene.physics.add.group({ allowGravity:false });
     for (let i = 0; i < maxMice(); i++) spawnMouse();
@@ -169,8 +174,13 @@
       obstGroup.add(r);
     }
     if(loki){ loki.destroy(); } if(merlin){ merlin.destroy(); merlin=null; } if(yumi){ yumi.destroy(); yumi=null; }
-    loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10).setScale(0.6);
-    loki.play('loki_idle'); loki.setCircle(26, META.w/2-26, META.h/2-26); loki.speed=750; loki.boost=0;
+    loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10);
+    const scale = 0.6;
+    const radius = 26 * scale;
+    loki.setScale(scale);
+    loki.play('loki_idle');
+    loki.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
+    loki.speed=750; loki.boost=0;
     loki.body.setDrag(180, 180);
     scene.physics.add.collider(loki, obstGroup);
     miceGroup.clear(true,true);
@@ -196,14 +206,24 @@
     loki.play(Math.hypot(loki.body.velocity.x,loki.body.velocity.y)>30 ? (loki.boost?'loki_sprint':'loki_run') : 'loki_idle', true);
 
     if(lvl>=2 && !merlin){
-      merlin = scene.physics.add.sprite(200,200,'merlin').setScale(0.6).play('merlin_run'); merlin.speed=330;
-      merlin.setCircle(26, META.w/2-26, META.h/2-26);
+      merlin = scene.physics.add.sprite(200,200,'merlin');
+      const scale = 0.6;
+      const radius = 26 * scale;
+      merlin.setScale(scale);
+      merlin.play('merlin_run');
+      merlin.speed=330;
+      merlin.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
       scene.physics.add.collider(merlin, obstGroup);
       scene.physics.add.overlap(merlin, miceGroup, (cat,m)=>{ m.destroy(); countM++; goalCaught++; updHUD(); checkEnd(); });
     }
     if(lvl>=3 && !yumi){
-      yumi = scene.physics.add.sprite(WORLD.w-200,WORLD.h-200,'yumi').setScale(0.6).play('yumi_run'); yumi.speed=300;
-      yumi.setCircle(26, META.w/2-26, META.h/2-26);
+      yumi = scene.physics.add.sprite(WORLD.w-200,WORLD.h-200,'yumi');
+      const scale = 0.6;
+      const radius = 26 * scale;
+      yumi.setScale(scale);
+      yumi.play('yumi_run');
+      yumi.speed=300;
+      yumi.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
       scene.physics.add.collider(yumi, obstGroup);
       scene.physics.add.overlap(yumi, miceGroup, (cat,m)=>{ m.destroy(); countY++; goalCaught++; updHUD(); checkEnd(); });
     }
