@@ -56,3 +56,32 @@ describe('saveSlot and loadSlot', () => {
       });
   });
 });
+
+describe('catchMouse', () => {
+  let context;
+
+  beforeEach(() => {
+    const code = fs.readFileSync(__dirname + '/game.js', 'utf8');
+    const catchMouseCode = code.match(/function catchMouse\(cat, m\)\{[\s\S]*?\n\s*\}\n\n/)[0];
+    context = {
+      countL: 0,
+      goalCaught: 0,
+      xp: 0,
+      sfxToggle: { checked: false },
+      sCatch: { currentTime: 0, play: jest.fn() },
+      updHUD: jest.fn(),
+      checkEnd: jest.fn()
+    };
+    vm.createContext(context);
+    vm.runInContext(catchMouseCode, context);
+  });
+
+  test('destroys mouse and updates counters', () => {
+    const mouse = { destroy: jest.fn() };
+    context.catchMouse({}, mouse);
+    expect(mouse.destroy).toHaveBeenCalled();
+    expect(context.countL).toBe(1);
+    expect(context.goalCaught).toBe(1);
+    expect(context.xp).toBe(1);
+  });
+});

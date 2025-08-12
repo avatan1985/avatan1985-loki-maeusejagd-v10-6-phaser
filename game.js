@@ -89,7 +89,7 @@
 
     loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10);
     const scale = 0.75;
-    const radius = 32 * scale;
+    const radius = 42 * scale;
     loki.setScale(scale);
     loki.play('loki_idle');
     loki.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
@@ -100,7 +100,7 @@
     for (let i = 0; i < maxMice(); i++) spawnMouse();
 
     scene.physics.add.collider(loki, obstGroup);
-      scene.physics.add.overlap(loki, miceGroup, (cat, m)=>{ m.destroy(); countL++; goalCaught++; xp++; if(sfxToggle.checked){ sCatch.currentTime=0; sCatch.play(); } updHUD(); checkEnd(); });
+    scene.physics.add.collider(loki, miceGroup, catchMouse);
 
     scene.cameras.main.startFollow(loki, false, 0.5, 0.5);
 
@@ -159,6 +159,16 @@
     return m;
   }
 
+  function catchMouse(cat, m){
+    m.destroy();
+    countL++; goalCaught++; xp++;
+    if(sfxToggle.checked){
+      sCatch.currentTime=0; sCatch.play();
+    }
+    updHUD();
+    checkEnd();
+  }
+
   function resetCooldowns(){
     skillbar?.querySelectorAll('.skillbtn').forEach(btn => btn.removeAttribute('data-cd'));
   }
@@ -209,7 +219,7 @@
     if(loki){ loki.destroy(); } if(merlin){ merlin.destroy(); merlin=null; } if(yumi){ yumi.destroy(); yumi=null; }
     loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10);
     const scale = 0.75;
-    const radius = 32 * scale;
+    const radius = 42 * scale;
     loki.setScale(scale);
     loki.play('loki_idle');
     loki.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
@@ -219,6 +229,7 @@
     scene.physics.add.collider(loki, obstGroup);
     miceGroup.clear(true,true);
     for (let i = 0; i < maxMice(); i++) spawnMouse();
+    scene.physics.add.collider(loki, miceGroup, catchMouse);
     scene.cameras.main.startFollow(loki, false, 0.5, 0.5);
   }
 
