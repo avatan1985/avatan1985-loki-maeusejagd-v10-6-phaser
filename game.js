@@ -88,6 +88,7 @@
     }
 
     loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10);
+    loki.setCollideWorldBounds(true);
     const scale = 0.75;
     const radius = 32 * scale;
     loki.setScale(scale);
@@ -208,6 +209,7 @@
     }
     if(loki){ loki.destroy(); } if(merlin){ merlin.destroy(); merlin=null; } if(yumi){ yumi.destroy(); yumi=null; }
     loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10);
+    loki.setCollideWorldBounds(true);
     const scale = 0.75;
     const radius = 32 * scale;
     loki.setScale(scale);
