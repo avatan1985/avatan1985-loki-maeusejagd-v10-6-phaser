@@ -68,7 +68,12 @@
     type: Phaser.AUTO,
     parent: 'game',
     backgroundColor: '#000',
-    scale: { mode: Phaser.Scale.RESIZE, autoCenter: Phaser.Scale.CENTER_BOTH },
+    scale: {
+      mode: Phaser.Scale.FIT,
+      autoCenter: Phaser.Scale.CENTER_BOTH,
+      width: 1280,
+      height: 720
+    },
     physics: { default: 'arcade', arcade: { gravity: { y: 0 }, debug: false } },
     scene: { preload, create, update }
   };
@@ -92,6 +97,8 @@
   }
 
   function create(){
+    this.scale.lockOrientation('landscape');
+    if (screen.orientation?.lock) screen.orientation.lock('landscape').catch(()=>{});
     const addAnim = (key, prefix) => {
       scene.anims.create({ key: `${key}_idle`, frames: scene.anims.generateFrameNumbers(prefix, { start:0, end: META.frames.idle-1 }), frameRate: 8, repeat: -1 });
       scene.anims.create({ key: `${key}_run`, frames: scene.anims.generateFrameNumbers(prefix, { start:META.frames.idle, end: META.frames.idle+META.frames.run-1 }), frameRate: 14, repeat: -1 });
