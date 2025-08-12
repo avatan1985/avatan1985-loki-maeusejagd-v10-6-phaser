@@ -100,7 +100,9 @@
   }
 
   function create(){
-    this.scale.lockOrientation('landscape');
+    if (this.scale.lockOrientation) {
+      this.scale.lockOrientation('landscape');
+    }
     if (screen.orientation?.lock) screen.orientation.lock('landscape').catch(()=>{});
     const addAnim = (key, prefix) => {
       scene.anims.create({ key: `${key}_idle`, frames: scene.anims.generateFrameNumbers(prefix, { start:0, end: META.frames.idle-1 }), frameRate: 8, repeat: -1 });
