@@ -15,6 +15,9 @@
     const cL=document.getElementById('cL'), cM=document.getElementById('cM'), cY=document.getElementById('cY'), xpEl=document.getElementById('xp'), xpLvlEl=document.getElementById('xpLvl');
     const lvlEl = document.getElementById('lvl'), goalNeed = document.getElementById('goalNeed'), goalLeft = document.getElementById('goalLeft');
   const btnNew = document.getElementById('btnNew'), btnContinue = document.getElementById('btnContinue');
+  // Disable menu buttons until the game is fully loaded
+  btnNew.disabled = true;
+  btnContinue.disabled = true;
   const btnRestart=document.getElementById('btnRestart'), btnMenu=document.getElementById('btnMenu'), btnMap=document.getElementById('btnMap'), btnPause=document.getElementById('btnPause'), btnMute=document.getElementById('btnMute');
   const ctrl = document.getElementById('ctrl'), joy = document.getElementById('joy'), stick = document.getElementById('stick'), joySize=document.getElementById('joySize');
   const mapToggle = document.getElementById('mapToggle'), sfxToggle=document.getElementById('sfxToggle');
@@ -27,6 +30,7 @@
   const skillbar = document.querySelector('.skillbar');
   const btnSprint = document.getElementById('btnSprint');
   let gameReady = false;
+  if (!gameReady) console.log('Loading assets...');
   let canDash = false;
 
   const INITIAL_GOAL = 15;
@@ -46,8 +50,8 @@
   function initMenu(){
     document.getElementById('btnSettings').onclick = ()=>{ settings.style.display = settings.style.display? '' : 'block'; credits.style.display='none'; };
     document.getElementById('btnCredits').onclick = ()=>{ credits.style.display = credits.style.display? '' : 'block'; settings.style.display='none'; };
-    btnNew.onclick = ()=>{ if(!gameReady) return; newGame(); startGame(); };
-    btnContinue.onclick = ()=>{ if(!gameReady) return; if(loadSlot()) startGame(); else newGame(), startGame(); };
+    btnNew.onclick = ()=>{ if(!gameReady) { console.log('Loading assets...'); return; } newGame(); startGame(); };
+    btnContinue.onclick = ()=>{ if(!gameReady) { console.log('Loading assets...'); return; } if(loadSlot()) startGame(); else newGame(), startGame(); };
     btnRestart.onclick = ()=>{ newGame(); startGame(); };
     btnMenu.onclick = ()=>{ showMenu(); saveSlot(); };
     btnMap.onclick = ()=>{ mapToggle.checked = !mapToggle.checked; applyCfg(); };
@@ -55,8 +59,6 @@
     btnMute.onclick = ()=>{ if(!bgm.paused) bgm.pause(); else { if(sfxToggle.checked) bgm.play(); } };
     btnNext.onclick = () => { ovWin.style.display='none'; nextLevel(); scene.scene.resume(); };
     btnRetry.onclick = () => { ovLose.style.display='none'; newGame(); startGame(); scene.scene.resume(); };
-
-    btnNew.disabled = btnContinue.disabled = false;
 
     const ensureTouchClick = btn => btn.addEventListener('touchend', () => btn.click());
     ensureTouchClick(btnNew);
