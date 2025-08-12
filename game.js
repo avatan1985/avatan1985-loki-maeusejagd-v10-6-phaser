@@ -199,6 +199,7 @@
   }
 
   function nextLevel(){
+    lvl++;
     goal = Math.floor(goal*1.25); goalCaught=0; countL=0; countM=0; countY=0;
     updHUD();
     resetWorld();
