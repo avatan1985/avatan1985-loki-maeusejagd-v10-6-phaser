@@ -103,35 +103,8 @@
     scene.cameras.main.setBounds(0,0,WORLD.w,WORLD.h);
     scene.physics.world.setBounds(0,0,WORLD.w,WORLD.h);
 
-    layers = {
-      far: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, `${biomes[(lvl-1)%biomes.length]}`).setOrigin(0,0).setScrollFactor(0),
-      mid: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, `${biomes[(lvl-1)%biomes.length]}`).setOrigin(0,0).setScrollFactor(0),
-      near: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, `${biomes[(lvl-1)%biomes.length]}`).setOrigin(0,0).setScrollFactor(0)
-    };
-
-    obstGroup = scene.physics.add.staticGroup();
-    for(const o of OBST[(lvl-1)%4]){
-      const r = scene.add.rectangle(o[0]+o[2]/2, o[1]+o[3]/2, o[2], o[3], 0x222a55, 0.55).setStrokeStyle(2,0x23284a);
-      obstGroup.add(r);
-    }
-
-    loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10);
-    loki.setCollideWorldBounds(true);
-    const scale = 0.75;
-    const radius = 32 * scale;
-    loki.setScale(scale);
-    loki.play('loki_idle');
-    loki.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
-    loki.speed=1000; loki.boost=0;
-    loki.body.setDrag(180, 180);
-    loki.setFlipX(loki.body.velocity.x < 0);
-    miceGroup = scene.physics.add.group({ allowGravity:false });
-    for (let i = 0; i < maxMice(); i++) spawnMouse();
-
-    scene.physics.add.collider(loki, obstGroup);
-      scene.physics.add.overlap(loki, miceGroup, (cat, m)=>{ m.destroy(); countL++; goalCaught++; xp++; if(sfxToggle.checked){ sCatch.currentTime=0; sCatch.play(); } updHUD(); checkEnd(); });
-
-    scene.cameras.main.startFollow(loki, false, 0.5, 0.5);
+    initWorld(); // sets up layers, sprites, and camera follow
+    // loki.speed=1000 is configured in initWorld
 
     keys = scene.input.keyboard.addKeys('W,A,S,D,LEFT,RIGHT,UP,DOWN,SPACE,SHIFT');
     keys.SHIFT.on('down', () => {
@@ -211,19 +184,39 @@
   }
 
   function resetWorld(){
+    initWorld();
+    // speed handled in initWorld
+  }
+
+  function initWorld(){
     scene.cameras.main.stopFollow();
     scene.cameras.main.setScroll(0,0);
     const biome = biomes[(lvl-1)%biomes.length];
-    // Reuse one background image per biome for all parallax layers
-    layers.far.setTexture(biome);
-    layers.mid.setTexture(biome);
-    layers.near.setTexture(biome);
-    obstGroup.clear(true,true);
+    if(!layers){
+      layers = {
+        far: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, `${biome}`).setOrigin(0,0).setScrollFactor(0),
+        mid: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, `${biome}`).setOrigin(0,0).setScrollFactor(0),
+        near: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, `${biome}`).setOrigin(0,0).setScrollFactor(0)
+      };
+    } else {
+      layers.far.setTexture(biome);
+      layers.mid.setTexture(biome);
+      layers.near.setTexture(biome);
+    }
+
+    if(obstGroup){
+      obstGroup.clear(true,true);
+    } else {
+      obstGroup = scene.physics.add.staticGroup();
+    }
     for(const o of OBST[(lvl-1)%4]){
       const r = scene.add.rectangle(o[0]+o[2]/2, o[1]+o[3]/2, o[2], o[3], 0x222a55, 0.55).setStrokeStyle(2,0x23284a);
       obstGroup.add(r);
     }
-    if(loki){ loki.destroy(); } if(merlin){ merlin.destroy(); merlin=null; } if(yumi){ yumi.destroy(); yumi=null; }
+
+    if(loki){ loki.destroy(); }
+    if(merlin){ merlin.destroy(); merlin=null; }
+    if(yumi){ yumi.destroy(); yumi=null; }
     loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10);
     loki.setCollideWorldBounds(true);
     const scale = 0.75;
@@ -234,9 +227,17 @@
     loki.speed=1000; loki.boost=0;
     loki.body.setDrag(180, 180);
     loki.setFlipX(loki.body.velocity.x < 0);
-    scene.physics.add.collider(loki, obstGroup);
-    miceGroup.clear(true,true);
+
+    if(miceGroup){
+      miceGroup.clear(true,true);
+    } else {
+      miceGroup = scene.physics.add.group({ allowGravity:false });
+    }
     for (let i = 0; i < maxMice(); i++) spawnMouse();
+
+    scene.physics.add.collider(loki, obstGroup);
+    scene.physics.add.overlap(loki, miceGroup, (cat, m)=>{ m.destroy(); countL++; goalCaught++; xp++; if(sfxToggle.checked){ sCatch.currentTime=0; sCatch.play(); } updHUD(); checkEnd(); });
+
     scene.cameras.main.startFollow(loki, false, 0.5, 0.5);
   }
 
