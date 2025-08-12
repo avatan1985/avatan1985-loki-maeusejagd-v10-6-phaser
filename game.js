@@ -110,6 +110,8 @@
     btnMap.onclick = ()=>{ mm.style.display = mm.style.display?'':'block'; };
     btnPause.onclick = ()=>{ scene.scene.pause(); };
     btnMute.onclick = ()=>{ if(!bgm.paused) bgm.pause(); else { if(sfxToggle.checked) bgm.play(); } };
+    btnNext.onclick = () => { ovWin.style.display='none'; nextLevel(); scene.scene.resume(); };
+    btnRetry.onclick = () => { ovLose.style.display='none'; newGame(); startGame(); scene.scene.resume(); };
 
     updHUD(); if(localStorage.getItem('slot')) btnContinue.style.display='';
     showMenu();
