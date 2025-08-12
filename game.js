@@ -105,9 +105,9 @@
         sSprint.play();
       }
     });
-    const prevent = e => e.preventDefault();
-    ['touchstart','touchmove','touchend','gesturestart'].forEach(ev=> document.addEventListener(ev, prevent, {passive:false}));
     const cvs = scene.game.canvas;
+    const prevent = e => { if(!e.target.closest('#menu, #hud')) e.preventDefault(); };
+    ['touchstart','touchmove','touchend','gesturestart'].forEach(ev=> cvs.addEventListener(ev, prevent, {passive:false}));
     cvs.addEventListener('pointerdown', e=>{ if(ctrl.value!=='swipe') return; swipeActive=true; swipeStart={x:e.clientX,y:e.clientY}; if(bgm.paused&&sfxToggle.checked) bgm.play(); });
     window.addEventListener('pointermove', e=>{ if(ctrl.value!=='swipe'||!swipeActive) return; const dx=e.clientX-swipeStart.x, dy=e.clientY-swipeStart.y; const max=180; const len=Math.hypot(dx,dy)||1; const rx=(dx/len)*Math.min(1, Math.abs(dx)/max); const ry=(dy/len)*Math.min(1, Math.abs(dy)/max); jdx=rx; jdy=ry; });
     window.addEventListener('pointerup', ()=>{ if(ctrl.value!=='swipe') return; swipeActive=false; jdx=jdy=0; });
@@ -129,6 +129,10 @@
     btnMute.onclick = ()=>{ if(!bgm.paused) bgm.pause(); else { if(sfxToggle.checked) bgm.play(); } };
     btnNext.onclick = () => { ovWin.style.display='none'; nextLevel(); scene.scene.resume(); };
     btnRetry.onclick = () => { ovLose.style.display='none'; newGame(); startGame(); scene.scene.resume(); };
+
+    const ensureTouchClick = btn => btn.addEventListener('touchend', () => btn.click());
+    ensureTouchClick(btnNew);
+    ensureTouchClick(btnContinue);
 
     updHUD(); if(localStorage.getItem('slot0') || localStorage.getItem('slot')) btnContinue.style.display='';
     showMenu();
