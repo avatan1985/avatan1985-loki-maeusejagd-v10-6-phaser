@@ -46,7 +46,8 @@
   let scene, layers=null, loki, merlin=null, yumi=null, miceGroup, obstGroup;
   let keys;
   let jdx=0,jdy=0, swipeActive=false, swipeStart=null;
-  const MAX_MICE = /iPhone|iPad|iPod/.test(navigator.userAgent)?28:36;
+  const BASE_MICE = /iPhone|iPad|iPod/.test(navigator.userAgent)?28:36;
+  const maxMice = () => Math.floor(BASE_MICE * (1 + 0.25*(lvl-1)));
 
   function preload(){
     scene=this;
@@ -89,7 +90,7 @@
     loki.play('loki_idle'); loki.setCircle(26, META.w/2-26, META.h/2-26); loki.speed=480; loki.boost=0;
     loki.body.setDrag(300, 300);
     miceGroup = scene.physics.add.group({ allowGravity:false });
-    for (let i = 0; i < MAX_MICE; i++) spawnMouse();
+    for (let i = 0; i < maxMice(); i++) spawnMouse();
 
     scene.physics.add.collider(loki, obstGroup);
     scene.physics.add.overlap(loki, miceGroup, (cat, m)=>{ m.destroy(); countL++; goalCaught++; if(sfxToggle.checked){ sCatch.currentTime=0; sCatch.play(); } updHUD(); checkEnd(); });
@@ -169,7 +170,7 @@
     loki.body.setDrag(300, 300);
     scene.physics.add.collider(loki, obstGroup);
     miceGroup.clear(true,true);
-    for (let i = 0; i < MAX_MICE; i++) spawnMouse();
+    for (let i = 0; i < maxMice(); i++) spawnMouse();
     scene.cameras.main.startFollow(loki, false, 0.5, 0.5);
   }
 
@@ -179,6 +180,7 @@
   function update(time, delta){
     if(state!=='play') return;
     const dt = Math.min(0.02, delta/1000);
+    if(miceGroup.countActive(true) < maxMice()) spawnMouse();
     const left = keys.A.isDown || keys.LEFT.isDown;
     const right = keys.D.isDown || keys.RIGHT.isDown;
     const up = keys.W.isDown || keys.UP.isDown;
