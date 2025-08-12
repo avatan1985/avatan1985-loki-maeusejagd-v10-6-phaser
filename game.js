@@ -88,7 +88,7 @@
 
     loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10);
     const scale = 0.75;
-    const radius = 21 * scale;
+    const radius = 32 * scale;
     loki.setScale(scale);
     loki.play('loki_idle');
     loki.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
@@ -179,7 +179,7 @@
     if(loki){ loki.destroy(); } if(merlin){ merlin.destroy(); merlin=null; } if(yumi){ yumi.destroy(); yumi=null; }
     loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10);
     const scale = 0.75;
-    const radius = 21 * scale;
+    const radius = 32 * scale;
     loki.setScale(scale);
     loki.play('loki_idle');
     loki.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
