@@ -4,6 +4,12 @@
   const biomes = ['kitchen','garden','garage','street'];
   const META = {w:160,h:130,rows:{idle:0,run:1,sprint:2},frames:{idle:6,run:8,sprint:8}};
   const WORLD = { w: 4800, h: 3200 };
+  const OBST = {
+    0:[[600,300,460,60],[1100,500,420,80],[1900,1200,500,60],[2600,800,380,90]],
+    1:[[700,700,300,140],[1600,1000,420,120],[2300,400,260,100],[3200,900,380,90]],
+    2:[[800,600,420,110],[1500,1200,380,90],[2400,800,420,120],[3000,1400,560,80]],
+    3:[[600,600,600,100],[1700,900,500,90],[2600,700,420,90],[3400,1200,480,100]]
+  };
 
   const hud = document.getElementById('hud'), menu = document.getElementById('menu');
   const cL=document.getElementById('cL'), cM=document.getElementById('cM'), cY=document.getElementById('cY');
@@ -73,12 +79,6 @@
       near: scene.add.tileSprite(0,0, WORLD.w, WORLD.h, `${biomes[(lvl-1)%biomes.length]}_near`).setOrigin(0,0).setScrollFactor(0)
     };
 
-    const OBST = {
-      0:[[600,300,460,60],[1100,500,420,80],[1900,1200,500,60],[2600,800,380,90]],
-      1:[[700,700,300,140],[1600,1000,420,120],[2300,400,260,100],[3200,900,380,90]],
-      2:[[800,600,420,110],[1500,1200,380,90],[2400,800,420,120],[3000,1400,560,80]],
-      3:[[600,600,600,100],[1700,900,500,90],[2600,700,420,90],[3400,1200,480,100]]
-    };
     obstGroup = scene.physics.add.staticGroup();
     for(const o of OBST[(lvl-1)%4]){
       const r = scene.add.rectangle(o[0]+o[2]/2, o[1]+o[3]/2, o[2], o[3], 0x222a55, 0.55).setStrokeStyle(2,0x23284a);
@@ -157,13 +157,7 @@
     layers.mid.setTexture(`${biome}_mid`);
     layers.near.setTexture(`${biome}_near`);
     obstGroup.clear(true,true);
-    const OBST2 = {
-      0:[[600,300,460,60],[1100,500,420,80],[1900,1200,500,60],[2600,800,380,90]],
-      1:[[700,700,300,140],[1600,1000,420,120],[2300,400,260,100],[3200,900,380,90]],
-      2:[[800,600,420,110],[1500,1200,380,90],[2400,800,420,120],[3000,1400,560,80]],
-      3:[[600,600,600,100],[1700,900,500,90],[2600,700,420,90],[3400,1200,480,100]]
-    };
-    for(const o of OBST2[(lvl-1)%4]){
+    for(const o of OBST[(lvl-1)%4]){
       const r = scene.add.rectangle(o[0]+o[2]/2, o[1]+o[3]/2, o[2], o[3], 0x222a55, 0.55).setStrokeStyle(2,0x23284a);
       obstGroup.add(r);
     }
