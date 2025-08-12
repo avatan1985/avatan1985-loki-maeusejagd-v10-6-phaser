@@ -12,8 +12,8 @@
   };
 
   const hud = document.getElementById('hud'), menu = document.getElementById('menu');
-  const cL=document.getElementById('cL'), cM=document.getElementById('cM'), cY=document.getElementById('cY');
-  const lvlEl = document.getElementById('lvl'), goalNeed = document.getElementById('goalNeed'), goalLeft = document.getElementById('goalLeft');
+    const cL=document.getElementById('cL'), cM=document.getElementById('cM'), cY=document.getElementById('cY'), xpEl=document.getElementById('xp');
+    const lvlEl = document.getElementById('lvl'), goalNeed = document.getElementById('goalNeed'), goalLeft = document.getElementById('goalLeft');
   const btnNew = document.getElementById('btnNew'), btnContinue = document.getElementById('btnContinue');
   const btnRestart=document.getElementById('btnRestart'), btnMenu=document.getElementById('btnMenu'), btnMap=document.getElementById('btnMap'), btnPause=document.getElementById('btnPause'), btnMute=document.getElementById('btnMute');
   const ctrl = document.getElementById('ctrl'), joy = document.getElementById('joy'), stick = document.getElementById('stick'), joySize=document.getElementById('joySize');
@@ -26,9 +26,9 @@
   const bgm = document.getElementById('bgm'); const sCatch=document.getElementById('sCatch'), sPounce=document.getElementById('sPounce'), sSprint=document.getElementById('sSprint');
 
   const INITIAL_GOAL = 35;
-  let state='menu',lvl=1,goal=INITIAL_GOAL,goalCaught=0;
-  let countL=0,countM=0,countY=0;
-  function updHUD(){ cL.textContent=countL; cM.textContent=countM; cY.textContent=countY; lvlEl.textContent=lvl; goalNeed.textContent=goal; goalLeft.textContent=Math.max(0, goal-goalCaught); }
+    let state='menu',lvl=1,goal=INITIAL_GOAL,goalCaught=0;
+    let countL=0,countM=0,countY=0,xp=0;
+    function updHUD(){ cL.textContent=countL; cM.textContent=countM; cY.textContent=countY; lvlEl.textContent=lvl; goalNeed.textContent=goal; goalLeft.textContent=Math.max(0, goal-goalCaught); xpEl.textContent=xp; }
 
   const cfg = JSON.parse(localStorage.getItem('loki_v10_cfg')||'{}');
   ctrl.value = cfg.ctrl || 'joystick'; mapToggle.checked = (cfg.map ?? true); sfxToggle.checked = (cfg.sfx ?? true); joySize.value = cfg.joySize || 160;
@@ -99,7 +99,7 @@
     for (let i = 0; i < maxMice(); i++) spawnMouse();
 
     scene.physics.add.collider(loki, obstGroup);
-    scene.physics.add.overlap(loki, miceGroup, (cat, m)=>{ m.destroy(); countL++; goalCaught++; if(sfxToggle.checked){ sCatch.currentTime=0; sCatch.play(); } updHUD(); checkEnd(); });
+      scene.physics.add.overlap(loki, miceGroup, (cat, m)=>{ m.destroy(); countL++; goalCaught++; xp++; if(sfxToggle.checked){ sCatch.currentTime=0; sCatch.play(); } updHUD(); checkEnd(); });
 
     scene.cameras.main.startFollow(loki, false, 0.5, 0.5);
 
@@ -159,7 +159,7 @@
 
   function startGame(){ state='play'; hud.style.display='flex'; menu.style.display='none'; if(bgm.paused && sfxToggle.checked) bgm.play(); }
   function showMenu(){ state='menu'; hud.style.display='none'; menu.style.display='flex'; }
-  function newGame(){ lvl=1; goal=INITIAL_GOAL; goalCaught=0; countL=countM=countY=0; updHUD(); resetWorld(); }
+    function newGame(){ lvl=1; goal=INITIAL_GOAL; goalCaught=0; countL=countM=countY=0; xp=0; updHUD(); resetWorld(); }
   function nextLevel(){ goal = Math.floor(goal*1.25); goalCaught=0; countL=0; countM=0; countY=0; updHUD(); resetWorld(); }
 
   function resetWorld(){
@@ -191,8 +191,8 @@
     scene.cameras.main.startFollow(loki, false, 0.5, 0.5);
   }
 
-  function saveSlot(){ const s={lvl,goal,goalCaught,countL,countM,countY}; localStorage.setItem('slot0',JSON.stringify(s)); }
-  function loadSlot(){ const s=localStorage.getItem('slot0') || localStorage.getItem('slot'); if(!s) return false; const o=JSON.parse(s); lvl=o.lvl; goal=o.goal; goalCaught=o.goalCaught; countL=o.countL; countM=o.countM; countY=o.countY; updHUD(); resetWorld(); if(!localStorage.getItem('slot0')) localStorage.setItem('slot0', s); return true; }
+    function saveSlot(){ const s={lvl,goal,goalCaught,countL,countM,countY,xp}; localStorage.setItem('slot0',JSON.stringify(s)); }
+    function loadSlot(){ const s=localStorage.getItem('slot0') || localStorage.getItem('slot'); if(!s) return false; const o=JSON.parse(s); lvl=o.lvl; goal=o.goal; goalCaught=o.goalCaught; countL=o.countL; countM=o.countM; countY=o.countY; xp=o.xp||0; updHUD(); resetWorld(); if(!localStorage.getItem('slot0')) localStorage.setItem('slot0', s); return true; }
 
   function checkEnd(){
     if(countM>=goal || countY>=goal){
