@@ -98,6 +98,19 @@
 
   function preload(){
     scene=this;
+    this.load.on('loaderror', (file) => {
+      console.error('Asset failed:', file.src);
+      loadMsg.textContent = 'Asset fehlgeschlagen: ' + file.key;
+      loadMsg.style.color = 'var(--bad)';
+      btnNew.disabled = btnContinue.disabled = true;
+    });
+    this.load.on('complete', () => {
+      if (!gameReady) {
+        gameReady = true;
+        btnNew.disabled = btnContinue.disabled = false;
+        loadMsg.textContent = '';
+      }
+    });
     for(const b of biomes){
       // Use the existing single background image for all parallax layers
       this.load.image(b, `${b}.webp`);
