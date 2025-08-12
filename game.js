@@ -156,7 +156,7 @@
     state='play';
     hud.style.display='flex';
     menu.style.display='none';
-    skillbar?.style.display='flex';
+    if (skillbar) skillbar.style.display = 'flex';
     resetCooldowns();
     if(bgm.paused && sfxToggle.checked) bgm.play();
   }
@@ -165,7 +165,7 @@
     state='menu';
     hud.style.display='none';
     menu.style.display='flex';
-    skillbar?.style.display='none';
+    if (skillbar) skillbar.style.display = 'none';
   }
 
   function newGame(){
