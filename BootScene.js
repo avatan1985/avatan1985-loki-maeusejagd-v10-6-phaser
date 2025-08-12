@@ -22,8 +22,26 @@ class BootScene extends Phaser.Scene {
         if (btnNew) btnNew.disabled = false;
         if (btnContinue) btnContinue.disabled = false;
         if (loadMsg) loadMsg.textContent = '';
+        this.scene.start('MenuScene');
+      } else {
+        console.error('Asset loading failed. MenuScene not started.');
+        if (loadMsg) {
+          loadMsg.style.color = 'var(--bad)';
+          loadMsg.textContent = 'Error loading assets. Please retry.';
+        }
+        const overlay = document.createElement('div');
+        overlay.className = 'overlay';
+        overlay.style.display = 'flex';
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = '<h2>Loading Error</h2><p>Assets could not be loaded.</p>';
+        const btn = document.createElement('button');
+        btn.textContent = 'Retry';
+        btn.onclick = () => window.location.reload();
+        card.appendChild(btn);
+        overlay.appendChild(card);
+        document.body.appendChild(overlay);
       }
-      this.scene.start('MenuScene');
     });
 
     const ext = 'webp';
