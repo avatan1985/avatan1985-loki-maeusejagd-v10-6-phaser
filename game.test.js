@@ -16,8 +16,10 @@ describe('saveSlot and loadSlot', () => {
 
     // extract functions from game.js
     const code = fs.readFileSync(__dirname + '/game.js', 'utf8');
-    const saveSlotCode = code.match(/function saveSlot\(\)\{[^]*?localStorage\.setItem[^]*?\}\s*/)[0];
+    const saveSlotCode = code.match(/function saveSlot\(\)\{[^]*?safeStorageSet[^]*?\}\s*/)[0];
     const loadSlotCode = code.match(/function loadSlot\(\)\{[^]*?return true;\s*\}/)[0];
+    const safeGetCode = code.match(/function safeStorageGet[^]*?\}\n/)[0];
+    const safeSetCode = code.match(/function safeStorageSet[^]*?\}\n/)[0];
 
     context = {
       localStorage: global.localStorage,
@@ -28,6 +30,8 @@ describe('saveSlot and loadSlot', () => {
     vm.runInContext(`
         var lvl=1, goal=35, goalCaught=0;
         var countL=0, countM=0, countY=0, xp=0;
+      ${safeGetCode}
+      ${safeSetCode}
       ${saveSlotCode}
       ${loadSlotCode}
     `, context);

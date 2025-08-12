@@ -31,9 +31,13 @@
     let countL=0,countM=0,countY=0,xp=0;
     function updHUD(){ cL.textContent=countL; cM.textContent=countM; cY.textContent=countY; lvlEl.textContent=lvl; goalNeed.textContent=goal; goalLeft.textContent=Math.max(0, goal-goalCaught); xpEl.textContent=xp; }
 
-  const cfg = JSON.parse(localStorage.getItem('loki_v10_cfg')||'{}');
+  function safeStorageGet(key, fallback=null){ try { return localStorage.getItem(key) ?? fallback; } catch { return fallback; } }
+  function safeStorageSet(key, value){ try { localStorage.setItem(key, value); } catch { } }
+
+  let cfg={};
+  try { cfg = JSON.parse(safeStorageGet('loki_v10_cfg','{}')); } catch { cfg={}; }
   ctrl.value = cfg.ctrl || 'joystick'; mapToggle.checked = (cfg.map ?? true); sfxToggle.checked = (cfg.sfx ?? true); joySize.value = cfg.joySize || 160;
-  function applyCfg(){ joy.style.width=joySize.value+'px'; joy.style.height=joySize.value+'px'; mm.style.display = mapToggle.checked?'':'none'; if(ctrl.value==='swipe'){ joy.classList.add('hidden'); } else { joy.classList.remove('hidden'); } localStorage.setItem('loki_v10_cfg', JSON.stringify({ ctrl: ctrl.value, map: mapToggle.checked, sfx: sfxToggle.checked, joySize:+joySize.value })); }
+  function applyCfg(){ joy.style.width=joySize.value+'px'; joy.style.height=joySize.value+'px'; mm.style.display = mapToggle.checked?'':'none'; if(ctrl.value==='swipe'){ joy.classList.add('hidden'); } else { joy.classList.remove('hidden'); } safeStorageSet('loki_v10_cfg', JSON.stringify({ ctrl: ctrl.value, map: mapToggle.checked, sfx: sfxToggle.checked, joySize:+joySize.value })); }
   ['input','change'].forEach(ev=> joySize.addEventListener(ev, applyCfg)); ctrl.addEventListener('change',applyCfg); mapToggle.addEventListener('change',applyCfg); sfxToggle.addEventListener('change',applyCfg); applyCfg();
 
   const config = {
@@ -142,7 +146,7 @@
     ensureTouchClick(btnNew);
     ensureTouchClick(btnContinue);
 
-    updHUD(); if(localStorage.getItem('slot0') || localStorage.getItem('slot')) btnContinue.style.display='';
+    updHUD(); if(safeStorageGet('slot0') || safeStorageGet('slot')) btnContinue.style.display='';
     showMenu();
   }
 
@@ -226,8 +230,8 @@
     scene.cameras.main.startFollow(loki, false, 0.5, 0.5);
   }
 
-    function saveSlot(){ const s={lvl,goal,goalCaught,countL,countM,countY,xp}; localStorage.setItem('slot0',JSON.stringify(s)); }
-    function loadSlot(){ const s=localStorage.getItem('slot0') || localStorage.getItem('slot'); if(!s) return false; const o=JSON.parse(s); lvl=o.lvl; goal=o.goal; goalCaught=o.goalCaught; countL=o.countL; countM=o.countM; countY=o.countY; xp=o.xp||0; updHUD(); resetWorld(); if(!localStorage.getItem('slot0')) localStorage.setItem('slot0', s); return true; }
+    function saveSlot(){ const s={lvl,goal,goalCaught,countL,countM,countY,xp}; safeStorageSet('slot0',JSON.stringify(s)); }
+    function loadSlot(){ const s=safeStorageGet('slot0') || safeStorageGet('slot'); if(!s) return false; let o; try{ o=JSON.parse(s); }catch{ return false; } lvl=o.lvl; goal=o.goal; goalCaught=o.goalCaught; countL=o.countL; countM=o.countM; countY=o.countY; xp=o.xp||0; updHUD(); resetWorld(); if(!safeStorageGet('slot0')) safeStorageSet('slot0', s); return true; }
 
   function checkEnd(){
     if(countM>=goal || countY>=goal){
