@@ -94,7 +94,7 @@
     loki.setScale(scale);
     loki.play('loki_idle');
     loki.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
-    loki.speed=750; loki.boost=0;
+    loki.speed=1000; loki.boost=0;
     loki.body.setDrag(180, 180);
     loki.setFlipX(loki.body.velocity.x < 0);
     miceGroup = scene.physics.add.group({ allowGravity:false });
@@ -217,7 +217,7 @@
     loki.setScale(scale);
     loki.play('loki_idle');
     loki.setCircle(radius, META.w * scale / 2 - radius, META.h * scale / 2 - radius);
-    loki.speed=750; loki.boost=0;
+    loki.speed=1000; loki.boost=0;
     loki.body.setDrag(180, 180);
     loki.setFlipX(loki.body.velocity.x < 0);
     scene.physics.add.collider(loki, obstGroup);
