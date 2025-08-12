@@ -81,7 +81,7 @@
     loki.play('loki_idle'); loki.setCircle(26, META.w/2-26, META.h/2-26); loki.speed=360; loki.boost=0;
     loki.body.setDrag(300, 300);
     miceGroup = scene.physics.add.group({ allowGravity:false });
-    for(let i=0;i<26;i++) spawnMouse();
+    for (let i = 0; i < MAX_MICE; i++) spawnMouse();
 
     scene.physics.add.collider(loki, obstGroup);
     scene.physics.add.overlap(loki, miceGroup, (cat, m)=>{ m.destroy(); countL++; goalCaught++; if(sfxToggle.checked){ sCatch.currentTime=0; sCatch.play(); } updHUD(); checkEnd(); });
@@ -157,7 +157,7 @@
     loki.body.setDrag(300, 300);
     scene.physics.add.collider(loki, obstGroup);
     miceGroup.clear(true,true);
-    for(let i=0;i<26;i++) spawnMouse();
+    for (let i = 0; i < MAX_MICE; i++) spawnMouse();
     scene.cameras.main.startFollow(loki, false, 0.5, 0.5);
   }
 
