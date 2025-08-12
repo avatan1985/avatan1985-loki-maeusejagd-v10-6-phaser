@@ -78,7 +78,7 @@
     }
 
     loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10).setScale(0.6);
-    loki.play('loki_idle'); loki.setCircle(26, META.w/2-26, META.h/2-26); loki.speed=360; loki.boost=0;
+    loki.play('loki_idle'); loki.setCircle(26, META.w/2-26, META.h/2-26); loki.speed=480; loki.boost=0;
     miceGroup = scene.physics.add.group({ allowGravity:false });
     for(let i=0;i<26;i++) spawnMouse();
 
@@ -88,6 +88,14 @@
     scene.cameras.main.startFollow(loki, false, 0.14, 0.14);
 
     keys = scene.input.keyboard.addKeys('W,A,S,D,LEFT,RIGHT,UP,DOWN,SPACE,SHIFT');
+    keys.SHIFT.on('down', () => {
+      loki.boost = 1;
+      if (sfxToggle.checked) { sSprint.currentTime = 0; sSprint.play(); }
+    });
+    keys.SHIFT.on('up', () => {
+      loki.boost = 0;
+      // TODO: implement cooldown or resource bar before re-enabling boost
+    });
     const prevent = e => e.preventDefault();
     ['touchstart','touchmove','touchend','gesturestart'].forEach(ev=> document.addEventListener(ev, prevent, {passive:false}));
     const cvs = scene.game.canvas;
@@ -151,7 +159,7 @@
     }
     if(loki){ loki.destroy(); } if(merlin){ merlin.destroy(); merlin=null; } if(yumi){ yumi.destroy(); yumi=null; }
     loki = scene.physics.add.sprite(WORLD.w/2, WORLD.h/2, 'loki').setDepth(10).setScale(0.6);
-    loki.play('loki_idle'); loki.setCircle(26, META.w/2-26, META.h/2-26); loki.speed=360; loki.boost=0;
+    loki.play('loki_idle'); loki.setCircle(26, META.w/2-26, META.h/2-26); loki.speed=480; loki.boost=0;
     scene.physics.add.collider(loki, obstGroup);
     miceGroup.clear(true,true);
     for(let i=0;i<26;i++) spawnMouse();
