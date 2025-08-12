@@ -129,3 +129,31 @@ describe('nextLevel', () => {
     expect(countY).toBe(0);
   });
 });
+
+describe('minimap toggle', () => {
+  const code = fs.readFileSync(__dirname + '/game.js', 'utf8');
+  const applyCfgCode = code.match(/function applyCfg\(\)\{[^]*?\}\n/)[0];
+  const btnMapCode = code.match(/btnMap\.onclick\s*=\s*\(\)\s*=>\s*\{[^]*?applyCfg\(\);[^]*?\};/)[0];
+
+  test('hidden when mapToggle unchecked', () => {
+    const context = {
+      mapToggle: { checked: true },
+      mm: { style: { display: 'block' } },
+      joy: { style: {}, classList: { add: () => {}, remove: () => {} } },
+      joySize: { value: 160 },
+      ctrl: { value: 'joystick', classList: { add: () => {}, remove: () => {} } },
+      sfxToggle: { checked: true },
+      safeStorageSet: () => {},
+      btnMap: {}
+    };
+    vm.createContext(context);
+    vm.runInContext(`
+      ${applyCfgCode}
+      ${btnMapCode}
+    `, context);
+
+    context.btnMap.onclick();
+    expect(context.mapToggle.checked).toBe(false);
+    expect(context.mm.style.display).toBe('none');
+  });
+});

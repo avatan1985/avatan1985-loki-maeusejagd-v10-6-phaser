@@ -38,7 +38,7 @@
   let cfg={};
   try { cfg = JSON.parse(safeStorageGet('loki_v10_cfg','{}')); } catch { cfg={}; }
   ctrl.value = cfg.ctrl || 'joystick'; mapToggle.checked = (cfg.map ?? true); sfxToggle.checked = (cfg.sfx ?? true); joySize.value = cfg.joySize || 160;
-  function applyCfg(){ joy.style.width=joySize.value+'px'; joy.style.height=joySize.value+'px'; mm.style.display = mapToggle.checked?'':'none'; if(ctrl.value==='swipe'){ joy.classList.add('hidden'); } else { joy.classList.remove('hidden'); } safeStorageSet('loki_v10_cfg', JSON.stringify({ ctrl: ctrl.value, map: mapToggle.checked, sfx: sfxToggle.checked, joySize:+joySize.value })); }
+  function applyCfg(){ joy.style.width=joySize.value+'px'; joy.style.height=joySize.value+'px'; mm.style.display = mapToggle.checked ? 'block' : 'none'; if(ctrl.value==='swipe'){ joy.classList.add('hidden'); } else { joy.classList.remove('hidden'); } safeStorageSet('loki_v10_cfg', JSON.stringify({ ctrl: ctrl.value, map: mapToggle.checked, sfx: sfxToggle.checked, joySize:+joySize.value })); }
   ['input','change'].forEach(ev=> joySize.addEventListener(ev, applyCfg)); ctrl.addEventListener('change',applyCfg); mapToggle.addEventListener('change',applyCfg); sfxToggle.addEventListener('change',applyCfg); applyCfg();
 
   function initMenu(){
@@ -48,7 +48,7 @@
     btnContinue.onclick = ()=>{ if(!gameReady) return; if(loadSlot()) startGame(); else newGame(), startGame(); };
     btnRestart.onclick = ()=>{ newGame(); startGame(); };
     btnMenu.onclick = ()=>{ showMenu(); saveSlot(); };
-    btnMap.onclick = ()=>{ mm.style.display = mm.style.display?'':'block'; };
+    btnMap.onclick = ()=>{ mapToggle.checked = !mapToggle.checked; applyCfg(); };
     btnPause.onclick = ()=>{ scene.scene.pause(); };
     btnMute.onclick = ()=>{ if(!bgm.paused) bgm.pause(); else { if(sfxToggle.checked) bgm.play(); } };
     btnNext.onclick = () => { ovWin.style.display='none'; nextLevel(); scene.scene.resume(); };
